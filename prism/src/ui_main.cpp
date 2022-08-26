@@ -27,6 +27,7 @@
 #include <QApplication>
 #include <QFontDialog>
 #include <QMenuBar>
+#include <QIcon>
 #include <QPushButton>
 #include <QVBoxLayout>
 
@@ -60,5 +61,35 @@ PrismView::PrismView(QWidget *parent, Qt::WindowFlags f) : QMainWindow(parent, f
 
 MainWidget::MainWidget(QWidget *parent) : QWidget(parent) {
 
+    auto btn = new QPushButton("START", this);
+    QObject::connect(
+        btn,
+        &QPushButton::clicked,
+        this,
+        &MainWidget::btnclicked
+    );
+    auto btn2 = new QPushButton("STOP", this);
 
+
+    btn->setIcon(QIcon(":res/play.png"));
+    btn2->setIcon(QIcon(":res/stop.png"));
+
+    auto hlayout = new QHBoxLayout();
+    hlayout->addWidget(btn);
+    hlayout->addWidget(btn2);
+    hlayout->addStretch();
+
+
+    auto layout = new QVBoxLayout();
+    layout->addLayout(hlayout);
+    layout->setMargin(0);
+    layout->setSpacing(0);
+    this->setLayout(layout);
+}
+
+void MainWidget::btnclicked() {
+    auto dlg = new ConfigView(this->config, this);
+    dlg->setModal(true);
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->show();
 }

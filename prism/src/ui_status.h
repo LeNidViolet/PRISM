@@ -54,7 +54,7 @@ class StatusView : public QWidget {
 
 public:
     explicit StatusView(QWidget *parent = nullptr);
-    void addMessage(int level, QString msg);
+    void addMessage(int level, QString &msg);
 
 private:
     StatusLabel *echo = nullptr;

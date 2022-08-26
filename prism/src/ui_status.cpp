@@ -47,7 +47,7 @@ StatusView::StatusView(QWidget *parent) : QWidget(parent) {
     this->setLayout(layout);
 }
 
-void StatusView::addMessage(int level, QString msg) {
+void StatusView::addMessage(int level, QString &msg) {
 
     auto palette = this->echo->palette();
 

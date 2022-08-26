@@ -94,7 +94,7 @@ void LogView::clear() {
     this->logList.clear();
 }
 
-void LogView::addLog(int level, QString msg) {
+void LogView::addLog(int level, QString &msg) {
 
     this->logList.append(new LogLine(level, msg));
 

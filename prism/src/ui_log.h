@@ -58,7 +58,7 @@ class LogView : public QDialog {
 
 public:
     explicit LogView(QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
-    void addLog(int level, QString msg);
+    void addLog(int level, QString &msg);
 
 private:
     SearchableTreeView *treeView = nullptr;

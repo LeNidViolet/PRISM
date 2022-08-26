@@ -25,7 +25,6 @@
 #include <QStyleFactory>
 #include <QFont>
 #include "ui_main.h"
-#include "func.h"
 
 int main(int argc, char *argv[]) {
 
@@ -36,8 +35,6 @@ int main(int argc, char *argv[]) {
     int fontSize = QApplication::font().pointSize();
     QFont font("Consolas", fontSize);
     QApplication::setFont(font);
-
-    setDarkTheme();
 
     auto ui = new PrismView;
     ui->show();

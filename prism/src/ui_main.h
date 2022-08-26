@@ -27,6 +27,7 @@
 #include <QStatusBar>
 #include <QWidget>
 #include "ui_status.h"
+#include "ui_config.h"
 
 class MainWidget : public QWidget {
 
@@ -35,6 +36,9 @@ class MainWidget : public QWidget {
 public:
     explicit MainWidget(QWidget *parent);
 
+private:
+    ConfigVars config;
+    void btnclicked();
 };
 
 

@@ -23,4 +23,56 @@
 #ifndef PRISM_UI_CONFIG_H
 #define PRISM_UI_CONFIG_H
 
+#include <QDialog>
+#include <QHostAddress>
+#include <QLineEdit>
+#include <QComboBox>
+#include <QSpinBox>
+
+class ConfigVars {
+
+public:
+    QString crtFile;
+    QString keyFile;
+    QString pktFile;
+    QString hostFile;
+
+    QHostAddress server;
+    unsigned short port;
+    QString method;
+    QString password;
+};
+
+#define SELECT_CRT      1
+#define SELECT_KEY      2
+#define SELECT_PKT      3
+#define SELECT_HOST     4
+
+class ConfigView : public QDialog {
+
+    Q_OBJECT
+
+public:
+    explicit ConfigView(ConfigVars &config, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
+
+signals:
+    void configConfirm(ConfigVars &config);
+
+private:
+    QLineEdit *crtFileLine;
+    QLineEdit *keyFileLine;
+    QLineEdit *pktFileLine;
+    QLineEdit *hostFileLine;
+    QComboBox *serverCombo;
+    QSpinBox *portSpin;
+    QComboBox *methodCombo;
+    QLineEdit *passwordLine;
+
+    void confirmClicked();
+    void selectClicked(int reason);
+
+    ConfigVars mconfig;
+};
+
+
 #endif //PRISM_UI_CONFIG_H

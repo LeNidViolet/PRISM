@@ -13,10 +13,12 @@ FIND_PACKAGE(Qt5 COMPONENTS
         Core
         Gui
         Widgets
+        Network
         REQUIRED
         )
 
 SET(PRISMUI_SRC
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ui.qrc
         ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ui_main.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ui_config.cpp
@@ -34,6 +36,7 @@ TARGET_LINK_LIBRARIES(prism
         Qt5::Core
         Qt5::Gui
         Qt5::Widgets
+        Qt5::Network
         shadowsocks-crypto
         mbedtls
         uv_a
