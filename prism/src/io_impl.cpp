@@ -1,6 +1,6 @@
 /**
  *  Copyright 2022, raprepo.
- *  Created by raprepo on 2022/8/25.
+ *  Created by raprepo on 2022/9/1.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -20,47 +20,43 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#ifndef PRISM_UI_STATUS_H
-#define PRISM_UI_STATUS_H
-
-#include <QWidget>
-#include <QLabel>
-#include "ui_log.h"
+#include "io_impl.h"
+#include <QFile>
+#include <QTextStream>
 
 
-class StatusLabel : public QLabel {
+IoImpl *IoImpl::minstance = nullptr;
 
-    Q_OBJECT
-
-public:
-    explicit StatusLabel(const QString &text, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags())
-        : QLabel(text, parent, f) {}
-    explicit StatusLabel(QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags())
-        : StatusLabel("", parent, f) { }
-
-signals:
-    void clicked();
-
-protected:
-    void mousePressEvent(QMouseEvent *ev) override {
-        QLabel::mousePressEvent(ev);
-        emit this->clicked();
+IoImpl *IoImpl::instance() {
+    static QMutex mutex;
+    if ( !minstance ) {
+        QMutexLocker locker(&mutex);
+        if ( !minstance )
+            minstance = new IoImpl;
     }
-};
 
-class StatusView : public QWidget {
+    return minstance;
+}
 
-    Q_OBJECT
+IoImpl::IoImpl() : QObject(nullptr) {
 
-public:
-    explicit StatusView(QWidget *parent = nullptr);
-    void addMessage(int level, const QString& msg);
+}
 
-private:
-    StatusLabel *echo = nullptr;
-    LogView *logView = nullptr;
-};
+__attribute__((unused)) void IoImpl::writeHostsOut(const QString &filePath, const QString &fileContent) {
 
+    this->instance();
+    QFile file(filePath);
+    if ( file.open(QIODevice::WriteOnly | QIODevice::Text) ) {
+        QTextStream out(&file);
+        out << fileContent;
+    }
+}
 
+__attribute__((unused)) void IoImpl::writePktsOut(const QString &filePath, const QByteArray &fileContent) {
 
-#endif //PRISM_UI_STATUS_H
+    this->instance();
+    QFile file(filePath);
+    if ( file.open(QIODevice::Append) ) {
+        file.write(fileContent);
+    }
+}

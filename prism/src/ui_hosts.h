@@ -1,6 +1,6 @@
 /**
  *  Copyright 2022, raprepo.
- *  Created by raprepo on 2022/8/25.
+ *  Created by raprepo on 2022/9/1.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -20,63 +20,71 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#ifndef PRISM_UI_LOG_H
-#define PRISM_UI_LOG_H
+#ifndef PRISM_UI_HOSTS_H
+#define PRISM_UI_HOSTS_H
 
 #include <QDialog>
-#include <QList>
+#include <QMap>
 #include <QTime>
-#include <QComboBox>
+#include <QHostAddress>
 #include <QStandardItemModel>
 #include "custom/searchable_treeview.h"
 
 
-
-class LogLine {
+class HostsLine {
 
 public:
-    explicit LogLine(int level, QString &msg)
-    : level(level), msg(msg) { this->time = QTime::currentTime(); };
+    explicit HostsLine(QHostAddress& address, QStringList& domains)
+        : domains(domains), address(address) { }
 
-    int level;
-    QString msg;
-    QTime time;
+    QHostAddress address;
+    QStringList domains;
+    QStandardItem *item = nullptr;
 };
-Q_DECLARE_METATYPE(LogLine *)
+Q_DECLARE_METATYPE(HostsLine *)
 
 
-class LogTreeViewModel : public QStandardItemModel {
+class HostsTreeViewModel : public QStandardItemModel {
 
 Q_OBJECT
 
 public:
-    explicit LogTreeViewModel(QObject *parent = nullptr) : QStandardItemModel(parent) {}
+    explicit HostsTreeViewModel(QObject *parent = nullptr) : QStandardItemModel(parent) {}
 
     QVariant data(const QModelIndex &index, int role) const override;
 };
 
 
-class LogView : public QDialog {
+class HostsView : public QDialog {
 
     Q_OBJECT
 
 public:
-    explicit LogView(QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
-    void addLog(int level, QString msg);
+    explicit HostsView(QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
+    void addHosts(QHostAddress& address, QStringList& domains);
+    void setHostsPath(QString& path) { this->hostsPath = path; }
+    void clear();
 
 protected:
     __attribute__((unused)) void showEvent(QShowEvent *event) override;
 
 private:
     SearchableTreeView *treeView = nullptr;
-    LogTreeViewModel *treeModel = nullptr;
-    QComboBox *levelBox = nullptr;
+    HostsTreeViewModel *treeModel = nullptr;
 
-    QList<const LogLine *> logList;
+    QMap<QString, HostsLine*> hostsMap;
+    bool dirty = false;
+    QString hostsPath;
 
-    void clear();
+    void createNewHosts(HostsLine *hosts);
+    void updateHosts(HostsLine *hosts);
+
+    void onExplrClicked();
+
+private slots:
+    void onTimeOutHostsIo();
 };
 
 
 
-#endif //PRISM_UI_LOG_H
+#endif //PRISM_UI_HOSTS_H

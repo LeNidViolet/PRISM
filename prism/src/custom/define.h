@@ -24,8 +24,7 @@
 #define PRISM_DEFINE_H
 
 #define TREE_WIDGET_ROW_HEIGHT  (20)
-
-
 #define MAX_LABEL_ECHO_LENGTH   (300)
-
+#define ITEMROLE        (Qt::UserRole + 0x100)      // return TreeItem
+#define SPANROLE        (ITEMROLE + 1)              // return is need row span
 #endif //PRISM_DEFINE_H

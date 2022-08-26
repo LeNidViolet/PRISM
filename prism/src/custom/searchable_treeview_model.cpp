@@ -22,6 +22,7 @@
  */
 
 #include "searchable_treeview_model.h"
+#include "define.h"
 
 QVariant TreeModel::headerData(int section, Qt::Orientation orientation, int role) const {
 

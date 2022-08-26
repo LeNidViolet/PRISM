@@ -43,13 +43,10 @@ ConfigView::ConfigView(ConfigVars &config, QWidget *parent, Qt::WindowFlags f) :
     this->hostFileLine = new QLineEdit(this);
     this->serverCombo = new QComboBox(this);
     this->portSpin = new QSpinBox(this);
+    this->timeoutSpin = new QSpinBox(this);
     this->methodCombo = new QComboBox(this);
     this->passwordLine = new QLineEdit(this);
-
-    this->crtFileLine->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-    this->keyFileLine->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-    this->pktFileLine->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-    this->hostFileLine->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    this->dnssrvChkbox = new QCheckBox("CREATE DNS SERVER", this);
 
     if ( config.crtFile.isEmpty() ) {
         auto s = QString("%1/res/root.crt").arg(QApplication::applicationDirPath());
@@ -86,7 +83,7 @@ ConfigView::ConfigView(ConfigVars &config, QWidget *parent, Qt::WindowFlags f) :
     this->methodCombo->addItem(config.method);
 
     if ( config.password.isEmpty() ) {
-        auto s = "123456";
+        auto s = "123qwe";
         config.password = s;
     }
     this->passwordLine->setText(config.password);
@@ -94,51 +91,75 @@ ConfigView::ConfigView(ConfigVars &config, QWidget *parent, Qt::WindowFlags f) :
     this->portSpin->setMinimum(0);
     this->portSpin->setMaximum(65535);
     if ( 0 == config.port )
-        config.port = 24500;
+        config.port = 14450;
     this->portSpin->setValue(config.port);
 
-    auto iplist = QNetworkInterface::allAddresses();
-    foreach ( auto &addr, iplist ) {
-        if ( addr.protocol() == QAbstractSocket::IPv4Protocol ) {
-            this->serverCombo->addItem(addr.toString());
+    this->timeoutSpin->setMinimum(0);
+    this->timeoutSpin->setMaximum(24 * 60 * 60);
+    if ( 0 == config.timeout )
+        config.timeout = 120;
+    this->timeoutSpin->setValue((int)config.timeout);
+
+    this->dnssrvChkbox->setChecked(config.dnssrv);
+
+    auto addrlist = QStringList();
+    addrlist.append("0.0.0.0");
+
+    auto hostlist = QNetworkInterface::allAddresses();
+    foreach (auto &host, hostlist ) {
+        if ( host.protocol() == QAbstractSocket::IPv4Protocol ) {
+            addrlist.append(host.toString());
         }
     }
     if ( !config.server.isNull() ) {
-        this->serverCombo->addItem(config.server.toString());
+        addrlist.append(config.server.toString());
     }
+    // 去重
+    for ( int i = 0; i < addrlist.count(); ++i ) {
+        forever { // remove all occurrences at greater indexes
+            int p = addrlist.lastIndexOf(addrlist[i]);
+            if ( p==i ) break;
+            addrlist.removeAt(p);
+        }
+    }
+    for ( auto& addr : addrlist ) {
+        this->serverCombo->addItem(addr);
+    }
+
 
     auto btnSelectCrt = new QPushButton("SELECT", this);
     QObject::connect(
         btnSelectCrt,
         &QPushButton::clicked,
         this,
-        [=]() { this->selectClicked(SELECT_CRT); }
+        [=]() { this->onSelectClicked(SELECT_CRT); }
     );
     auto btnSelectKey = new QPushButton("SELECT", this);
     QObject::connect(
         btnSelectKey,
         &QPushButton::clicked,
         this,
-        [=]() { this->selectClicked(SELECT_KEY); }
+        [=]() { this->onSelectClicked(SELECT_KEY); }
     );
     auto btnSelectPkt = new QPushButton("SELECT", this);
     QObject::connect(
         btnSelectPkt,
         &QPushButton::clicked,
         this,
-        [=]() { this->selectClicked(SELECT_PKT); }
+        [=]() { this->onSelectClicked(SELECT_PKT); }
     );
     auto btnSelectHost = new QPushButton("SELECT", this);
     QObject::connect(
         btnSelectHost,
         &QPushButton::clicked,
         this,
-        [=]() { this->selectClicked(SELECT_HOST); }
+        [=]() { this->onSelectClicked(SELECT_HOST); }
     );
 
     auto labelAddr = new QLabel("ADDR: ", this);
     auto labelMthd = new QLabel("MTHD: ", this);
     auto labelPswd = new QLabel("PSWD: ", this);
+    auto labelTimt = new QLabel("TIMT: ", this);
     auto labelCert = new QLabel("CERT: ", this);
     auto labelSKey = new QLabel("SKEY: ", this);
     auto labelPkts = new QLabel("PKTS: ", this);
@@ -148,55 +169,48 @@ ConfigView::ConfigView(ConfigVars &config, QWidget *parent, Qt::WindowFlags f) :
     hlayout1->addWidget(labelAddr);
     hlayout1->addWidget(this->serverCombo, 1);
     hlayout1->addWidget(this->portSpin);
-    hlayout1->setSpacing(0);
-    hlayout1->setMargin(0);
 
     auto hlayout2 = new QHBoxLayout();
     hlayout2->addWidget(labelMthd);
     hlayout2->addWidget(this->methodCombo, 1);
-    hlayout2->setSpacing(0);
-    hlayout2->setMargin(0);
 
     auto hlayout3 = new QHBoxLayout();
     hlayout3->addWidget(labelPswd);
     hlayout3->addWidget(this->passwordLine);
-    hlayout3->setSpacing(0);
-    hlayout3->setMargin(0);
 
     auto hlayout4 = new QHBoxLayout();
-    hlayout4->addWidget(labelCert);
-    hlayout4->addWidget(this->crtFileLine);
-    hlayout4->addWidget(btnSelectCrt);
-    hlayout4->setSpacing(0);
-    hlayout4->setMargin(0);
+    hlayout4->addWidget(labelTimt);
+    hlayout4->addWidget(this->timeoutSpin, 1);
 
     auto hlayout5 = new QHBoxLayout();
-    hlayout5->addWidget(labelSKey);
-    hlayout5->addWidget(this->keyFileLine);
-    hlayout5->addWidget(btnSelectKey);
-    hlayout5->setSpacing(0);
-    hlayout5->setMargin(0);
+    hlayout5->addWidget(labelCert);
+    hlayout5->addWidget(this->crtFileLine);
+    hlayout5->addWidget(btnSelectCrt);
 
     auto hlayout6 = new QHBoxLayout();
-    hlayout6->addWidget(labelPkts);
-    hlayout6->addWidget(this->pktFileLine);
-    hlayout6->addWidget(btnSelectPkt);
-    hlayout6->setSpacing(0);
-    hlayout6->setMargin(0);
+    hlayout6->addWidget(labelSKey);
+    hlayout6->addWidget(this->keyFileLine);
+    hlayout6->addWidget(btnSelectKey);
 
     auto hlayout7 = new QHBoxLayout();
-    hlayout7->addWidget(labelHost);
-    hlayout7->addWidget(this->hostFileLine);
-    hlayout7->addWidget(btnSelectHost);
-    hlayout7->setSpacing(0);
-    hlayout7->setMargin(0);
+    hlayout7->addWidget(labelPkts);
+    hlayout7->addWidget(this->pktFileLine);
+    hlayout7->addWidget(btnSelectPkt);
+
+    auto hlayout8 = new QHBoxLayout();
+    hlayout8->addWidget(labelHost);
+    hlayout8->addWidget(this->hostFileLine);
+    hlayout8->addWidget(btnSelectHost);
+
+    auto hlayout10 = new QHBoxLayout();
+    hlayout10->addWidget(this->dnssrvChkbox);
 
     auto btnConfirm = new QPushButton("CONFIRM", this);
     QObject::connect(
         btnConfirm,
         &QPushButton::clicked,
         this,
-        &ConfigView::confirmClicked
+        &ConfigView::onConfirmClicked
     );
     auto btnClose = new QPushButton("CLOSE", this);
     QObject::connect(
@@ -206,26 +220,28 @@ ConfigView::ConfigView(ConfigVars &config, QWidget *parent, Qt::WindowFlags f) :
         &ConfigView::close
     );
 
-    auto hlayout8 = new QHBoxLayout();
-    hlayout8->addStretch();
-    hlayout8->addWidget(btnClose);
-    hlayout8->addWidget(btnConfirm);
+    auto hlayout9 = new QHBoxLayout();
+    hlayout9->addStretch();
+    hlayout9->addWidget(btnClose);
+    hlayout9->addWidget(btnConfirm);
 
     auto gb1 = new QGroupBox("SS", this);
     auto layoutgb1 = new QVBoxLayout();
     layoutgb1->addLayout(hlayout1);
     layoutgb1->addLayout(hlayout2);
     layoutgb1->addLayout(hlayout3);
+    layoutgb1->addLayout(hlayout4);
+    layoutgb1->addLayout(hlayout10);
     layoutgb1->setMargin(0);
     layoutgb1->setSpacing(0);
     gb1->setLayout(layoutgb1);
 
     auto gb2 = new QGroupBox("TLS", this);
     auto layoutgb2 = new QVBoxLayout();
-    layoutgb2->addLayout(hlayout4);
     layoutgb2->addLayout(hlayout5);
     layoutgb2->addLayout(hlayout6);
     layoutgb2->addLayout(hlayout7);
+    layoutgb2->addLayout(hlayout8);
     layoutgb2->setMargin(0);
     layoutgb2->setSpacing(0);
     gb2->setLayout(layoutgb2);
@@ -234,8 +250,9 @@ ConfigView::ConfigView(ConfigVars &config, QWidget *parent, Qt::WindowFlags f) :
     layout->addWidget(gb1);
     layout->addWidget(gb2);
     layout->addStretch();
-    layout->addLayout(hlayout8);
+    layout->addLayout(hlayout9);
     layout->setMargin(0);
+    layout->setSpacing(0);
     this->setLayout(layout);
 
     this->resize(600, 300);
@@ -243,7 +260,7 @@ ConfigView::ConfigView(ConfigVars &config, QWidget *parent, Qt::WindowFlags f) :
     this->mconfig = config;
 }
 
-void ConfigView::confirmClicked() {
+void ConfigView::onConfirmClicked() {
 
     this->mconfig.crtFile = this->crtFileLine->text();
     this->mconfig.keyFile = this->keyFileLine->text();
@@ -251,15 +268,22 @@ void ConfigView::confirmClicked() {
     this->mconfig.pktFile = this->pktFileLine->text();
 
     this->mconfig.port = this->portSpin->value();
+    this->mconfig.timeout = this->timeoutSpin->value();
     this->mconfig.server = QHostAddress(this->serverCombo->currentText());
     this->mconfig.password = this->passwordLine->text();
+
+    this->mconfig.dnssrv = this->dnssrvChkbox->isChecked();
 
     if ( this->mconfig.server.isNull() || QAbstractSocket::IPv4Protocol != this->mconfig.server.protocol() ) {
         QMessageBox::information(this, "INFO", "Select a Valid IP Address");
         return;
     }
-    if ( this->mconfig.port <= 0 || this->mconfig.port >= 65535 ) {
+    if ( this->mconfig.port <= 0 || this->mconfig.port > 65535 ) {
         QMessageBox::information(this, "INFO", "Select a Valid Port");
+        return;
+    }
+    if ( this->mconfig.timeout <= 0 || this->mconfig.timeout > 24 * 60 * 60 ) {
+        QMessageBox::information(this, "INFO", "Select a Valid Timeout");
         return;
     }
     if ( this->mconfig.password.isEmpty() || this->mconfig.password.size() >= 64 ) {
@@ -288,7 +312,7 @@ void ConfigView::confirmClicked() {
     this->close();
 }
 
-void ConfigView::selectClicked(int type) {
+void ConfigView::onSelectClicked(int type) {
 
     QString filter;
     QString dir;

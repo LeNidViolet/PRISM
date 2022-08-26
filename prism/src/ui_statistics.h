@@ -1,6 +1,6 @@
 /**
  *  Copyright 2022, raprepo.
- *  Created by raprepo on 2022/8/25.
+ *  Created by raprepo on 2022/9/1.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -20,47 +20,57 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#ifndef PRISM_UI_STATUS_H
-#define PRISM_UI_STATUS_H
+#ifndef PRISM_UI_STATISTICS_H
+#define PRISM_UI_STATISTICS_H
 
-#include <QWidget>
-#include <QLabel>
-#include "ui_log.h"
+#include <QDialog>
+#include <QStandardItemModel>
+#include "custom/searchable_treeview.h"
 
 
-class StatusLabel : public QLabel {
+class MainWidget;
 
-    Q_OBJECT
+class StaticsTreeViewModel : public QStandardItemModel {
 
-public:
-    explicit StatusLabel(const QString &text, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags())
-        : QLabel(text, parent, f) {}
-    explicit StatusLabel(QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags())
-        : StatusLabel("", parent, f) { }
-
-signals:
-    void clicked();
-
-protected:
-    void mousePressEvent(QMouseEvent *ev) override {
-        QLabel::mousePressEvent(ev);
-        emit this->clicked();
-    }
-};
-
-class StatusView : public QWidget {
-
-    Q_OBJECT
+Q_OBJECT
 
 public:
-    explicit StatusView(QWidget *parent = nullptr);
-    void addMessage(int level, const QString& msg);
+    explicit StaticsTreeViewModel(MainWidget *mainWidget, QObject *parent = nullptr)
+        : mmainWidget(mainWidget), QStandardItemModel(parent) {}
+
+    QVariant data(const QModelIndex &index, int role) const override;
 
 private:
-    StatusLabel *echo = nullptr;
-    LogView *logView = nullptr;
+    MainWidget *mmainWidget = nullptr;
+};
+
+
+// 统计对话框窗口
+class StatisticsView : public QDialog {
+
+Q_OBJECT
+
+public:
+    explicit StatisticsView(MainWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
+
+public slots:
+    void updateStatistics();
+
+signals:
+    void flushCache();
+
+protected:
+    __attribute__((unused)) void showEvent(QShowEvent *event) override;
+
+private:
+    SearchableTreeView *treeView = nullptr;
+    StaticsTreeViewModel *treeModel = nullptr;
+
+    static void explrFile(const QString& filePath);
 };
 
 
 
-#endif //PRISM_UI_STATUS_H
+
+
+#endif //PRISM_UI_STATISTICS_H

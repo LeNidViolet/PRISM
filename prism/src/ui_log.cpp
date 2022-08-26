@@ -22,8 +22,9 @@
  */
 #include "ui_log.h"
 #include <QHeaderView>
-#include <QMenu>
+#include <QPushButton>
 #include <QVBoxLayout>
+#include <QMessageBox>
 #include "macros.h"
 
 typedef enum {
@@ -45,79 +46,118 @@ LogView::LogView(QWidget *parent, Qt::WindowFlags f) : QDialog(parent, f) {
     for ( const auto &name : OprtName )
         labels << name.name;
 
-    this->rootItem = new LogDetailItem(nullptr);
     this->treeView = new SearchableTreeView(this);
-    this->sourceModel = new TreeModel(this->rootItem, labels, this);
-    this->treeView->setSourceModel(this->sourceModel);
+    this->treeModel = new LogTreeViewModel(this);
+    this->treeModel->setHorizontalHeaderLabels(labels);
+    this->treeView->setSourceModel(this->treeModel);
+    this->treeView->setSortingEnabled(true);
+    this->levelBox = new QComboBox(this);
 
-    // 右键菜单
-    auto ctxMenu = new QMenu(this);
-    QObject::connect(
-        this->treeView,
-        &SearchableTreeView::customContextMenuRequested,
-        this,
-        [=]() { ctxMenu->exec(QCursor::pos()); }
-    );
+    for ( int i = 1; i <= 5 ; ++i ) {
+        this->levelBox->addItem(QString::number(i), i);
+    }
+    this->levelBox->setCurrentIndex(3);
+    auto lbl = new QLabel("LEVEL:", this);
 
-    // 拷贝选中项内容
-    auto action = ctxMenu->addAction("COPY ITEM");
-    QObject::connect(
-        action,
-        &QAction::triggered,
-        this->treeView,
-        &SearchableTreeView::copyCurrentText
-    );
+    auto btnClear = new QPushButton("CLEAR", this);
+    QObject::connect(btnClear, &QPushButton::clicked, this, &LogView::clear);
+    auto btnClose = new QPushButton("CLOSE", this);
+    QObject::connect(btnClose, &QPushButton::clicked, this, &LogView::hide);
 
-    // 清空数据
-    action = ctxMenu->addAction("CLEAR");
-    QObject::connect(
-        action,
-        &QAction::triggered,
-        this,
-        &LogView::clear
-    );
+    btnClear->setFocusPolicy(Qt::NoFocus);
+    btnClose->setFocusPolicy(Qt::NoFocus);
 
+    auto hlayout = new QHBoxLayout();
+    hlayout->addStretch();
+    hlayout->addWidget(lbl);
+    hlayout->addWidget(this->levelBox);
+    hlayout->addWidget(btnClear);
+    hlayout->addWidget(btnClose);
+    hlayout->setMargin(0);
+    hlayout->setSpacing(0);
 
     auto layout = new QVBoxLayout();
     layout->addWidget(this->treeView);
+    layout->addLayout(hlayout);
     layout->setMargin(0);
     layout->setSpacing(0);
 
     this->setLayout(layout);
-    this->resize(450, 400);
+    this->resize(600, 400);
+    this->setWindowTitle("LOG");
 }
 
 void LogView::clear() {
 
-    this->treeView->clear();
-    qDeleteAll(this->logList);
-    this->logList.clear();
+    auto ret = QMessageBox::question(this, "CONFIRM", "Remove All Logs?");
+    if ( QMessageBox::Yes == ret ) {
+        this->treeView->clear();
+        qDeleteAll(this->logList);
+        this->logList.clear();
+    }
 }
 
-void LogView::addLog(int level, QString &msg) {
+void LogView::addLog(int level, QString msg) {
 
-    this->logList.append(new LogLine(level, msg));
+    if ( level > this->levelBox->currentData().toInt() ) return;
 
-    auto root = this->sourceModel->root();
+    auto log = new LogLine(level, msg);
+    this->logList << log;
 
-    this->sourceModel->insertRow(this->logList.size() - 1);
-    auto index = this->sourceModel->index(this->logList.size() - 1, 0, QModelIndex());
-    auto item = this->sourceModel->itemFromIndex(index);
-    item->setPtr((void *)this->logList.last());
-    root->appendChild(item);
+    QVariant var;
+    var.setValue(log);
 
+    QList<QStandardItem*> items;
+    for ( int i = 0; i < G_N_ELEMENTS(OprtName); i++ ) {
+        auto item = new QStandardItem();
+        item->setCheckable(false);
+        item->setEditable(false);
+        item->setData(var);
+
+        items << item;
+    }
+    this->treeModel->appendRow(items);
     this->treeView->postload();
 }
 
-QVariant LogDetailItem::data(int column) const {
+__attribute__((unused)) void LogView::showEvent(QShowEvent *event) {
 
-    auto log = static_cast<const LogLine *>(this->ptr());
+    static bool firstShow = true;
+    QDialog::showEvent(event);
+    if ( firstShow && this->treeModel->rowCount() > 0 ) {
+        firstShow = false;
+        this->treeView->header()->resizeSections(QHeaderView::ResizeToContents);
+    }
+}
 
-    switch ( column ) {
-    case Log_Time:      return log->time.toString("hh:mm:ss");
-    case Log_Level:     return QString::number(log->level);
-    case Log_Message:   return log->msg;
-    default: break;
+
+QVariant LogTreeViewModel::data(const QModelIndex &index, int role) const {
+    if ( !index.isValid() )
+        return {};
+
+    auto item = this->item(index.row());
+    if ( nullptr == item ) return {};
+
+    auto var = item->data();
+    if ( !var.isValid() ) return {};
+
+    auto log = var.value<LogLine *>();
+    if ( !log ) return {};
+
+    if ( role == Qt::DisplayRole ) {
+
+        switch ( index.column() ) {
+        case Log_Time:      return log->time.toString("hh:mm:ss");
+        case Log_Level:     return QString::number(log->level);
+        case Log_Message:   return log->msg;
+        default: break;
+        }
+    }
+
+    if ( role == Qt::ForegroundRole ) {
+
+        if ( 1 == log->level ) return QBrush(COLOR_ERROR);
+        if ( 2 == log->level ) return QBrush(COLOR_WARN);
     }
 
     return {};

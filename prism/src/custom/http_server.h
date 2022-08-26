@@ -1,6 +1,6 @@
 /**
  *  Copyright 2022, raprepo.
- *  Created by raprepo on 2022/8/25.
+ *  Created by raprepo on 2022/8/31.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -20,47 +20,38 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#ifndef PRISM_UI_STATUS_H
-#define PRISM_UI_STATUS_H
+#ifndef PRISM_HTTP_SERVER_H
+#define PRISM_HTTP_SERVER_H
 
-#include <QWidget>
-#include <QLabel>
-#include "ui_log.h"
+#include <QTcpServer>
+#include <QTcpSocket>
 
-
-class StatusLabel : public QLabel {
+class HttpServer : public QTcpServer {
 
     Q_OBJECT
 
 public:
-    explicit StatusLabel(const QString &text, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags())
-        : QLabel(text, parent, f) {}
-    explicit StatusLabel(QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags())
-        : StatusLabel("", parent, f) { }
+    explicit HttpServer(
+        const QHostAddress& address,
+        quint16 port,
+        const QString& filePath,        // 要响应的文件
+        const QString& reqPath,         // 要验证的请求路径
+        const QString& respFileName,    // 要在客户端呈现的文件名
+        QObject* parent = nullptr
+    );
+    void incomingConnection(qintptr handle) override;
 
-signals:
-    void clicked();
+public slots:
+    __attribute__((unused)) void terminal() { this->close(); this->deleteLater(); }
 
-protected:
-    void mousePressEvent(QMouseEvent *ev) override {
-        QLabel::mousePressEvent(ev);
-        emit this->clicked();
-    }
-};
-
-class StatusView : public QWidget {
-
-    Q_OBJECT
-
-public:
-    explicit StatusView(QWidget *parent = nullptr);
-    void addMessage(int level, const QString& msg);
+private slots:
+    void readClient();
+    void discardClient();
 
 private:
-    StatusLabel *echo = nullptr;
-    LogView *logView = nullptr;
+    QString filePath;
+    QString reqPath;
+    QString respFileName;
 };
 
-
-
-#endif //PRISM_UI_STATUS_H
+#endif //PRISM_HTTP_SERVER_H

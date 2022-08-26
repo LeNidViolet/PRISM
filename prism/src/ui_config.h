@@ -28,6 +28,7 @@
 #include <QLineEdit>
 #include <QComboBox>
 #include <QSpinBox>
+#include <QCheckBox>
 
 class ConfigVars {
 
@@ -39,8 +40,10 @@ public:
 
     QHostAddress server;
     unsigned short port;
+    unsigned int timeout;
     QString method;
     QString password;
+    bool dnssrv;
 };
 
 #define SELECT_CRT      1
@@ -65,11 +68,13 @@ private:
     QLineEdit *hostFileLine;
     QComboBox *serverCombo;
     QSpinBox *portSpin;
+    QSpinBox *timeoutSpin;
     QComboBox *methodCombo;
     QLineEdit *passwordLine;
+    QCheckBox *dnssrvChkbox;
 
-    void confirmClicked();
-    void selectClicked(int reason);
+    void onConfirmClicked();
+    void onSelectClicked(int reason);
 
     ConfigVars mconfig;
 };

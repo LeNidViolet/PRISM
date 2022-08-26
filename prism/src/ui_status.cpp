@@ -47,9 +47,7 @@ StatusView::StatusView(QWidget *parent) : QWidget(parent) {
     this->setLayout(layout);
 }
 
-void StatusView::addMessage(int level, QString &msg) {
-
-    auto palette = this->echo->palette();
+void StatusView::addMessage(int level, const QString& msg) {
 
     auto color = QApplication::palette().color(QPalette::WindowText);
 
@@ -59,6 +57,7 @@ void StatusView::addMessage(int level, QString &msg) {
     default : break;
     }
 
+    auto palette = this->echo->palette();
     palette.setColor(QPalette::WindowText, color);
     this->echo->setPalette(palette);
     this->echo->setText(msg);

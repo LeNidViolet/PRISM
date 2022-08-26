@@ -38,4 +38,6 @@ typedef struct NAMEINDEX_ {
 #define COLOR_ERROR             COLOR_UNACCEPTABLE
 #define COLOR_WARN              (QColor::fromRgb(0xFFA0AB4C))
 
+#define G_N_ELEMENTS(arr)       ((sizeof(arr))/(sizeof((arr)[0])))
+
 #endif //PRISM_MACROS_H

@@ -29,9 +29,6 @@
 #include <QVariant>
 
 
-#define ITEMROLE        (Qt::UserRole + 0x100)      // return TreeItem
-#define SPANROLE        (ITEMROLE + 1)              // return is need row span
-
 class TreeItem {
 
 public:

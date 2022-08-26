@@ -22,7 +22,6 @@
  */
 
 #include "searchable_treeview.h"
-#include "searchable_treeview_model.h"
 #include <QApplication>
 #include <QClipboard>
 #include <QLineEdit>

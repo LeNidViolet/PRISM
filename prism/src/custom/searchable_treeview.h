@@ -71,6 +71,8 @@ public:
 
     void setSourceModel(QAbstractItemModel *model) { this->proxyModel->setSourceModel(model); this->checkRowSpan(); }
 
+    void scrollTo(const QModelIndex &index) { this->treeView->scrollTo(index); }
+
     void clear();
     void postload();
 public slots:
