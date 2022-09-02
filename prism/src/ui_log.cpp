@@ -25,6 +25,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QMessageBox>
+#include <QMenu>
 #include "macros.h"
 
 typedef enum {
@@ -59,19 +60,20 @@ LogView::LogView(QWidget *parent, Qt::WindowFlags f) : QDialog(parent, f) {
     this->levelBox->setCurrentIndex(3);
     auto lbl = new QLabel("LEVEL:", this);
 
-    auto btnClear = new QPushButton("CLEAR", this);
-    QObject::connect(btnClear, &QPushButton::clicked, this, &LogView::clear);
+    auto ctxMenu = new QMenu(this);
+    QObject::connect(this->treeView, &SearchableTreeView::customContextMenuRequested, this, [=]() { ctxMenu->exec(QCursor::pos()); });
+    auto actn = ctxMenu->addAction("CLEAR LOGS");
+    QObject::connect(actn, &QAction::triggered, this, &LogView::onClearClicked);
+
+
     auto btnClose = new QPushButton("CLOSE", this);
     QObject::connect(btnClose, &QPushButton::clicked, this, &LogView::hide);
-
-    btnClear->setFocusPolicy(Qt::NoFocus);
     btnClose->setFocusPolicy(Qt::NoFocus);
 
     auto hlayout = new QHBoxLayout();
     hlayout->addStretch();
     hlayout->addWidget(lbl);
     hlayout->addWidget(this->levelBox);
-    hlayout->addWidget(btnClear);
     hlayout->addWidget(btnClose);
     hlayout->setMargin(0);
     hlayout->setSpacing(0);
@@ -87,13 +89,15 @@ LogView::LogView(QWidget *parent, Qt::WindowFlags f) : QDialog(parent, f) {
     this->setWindowTitle("LOG");
 }
 
-void LogView::clear() {
+void LogView::onClearClicked() {
 
-    auto ret = QMessageBox::question(this, "CONFIRM", "Remove All Logs?");
-    if ( QMessageBox::Yes == ret ) {
-        this->treeView->clear();
-        qDeleteAll(this->logList);
-        this->logList.clear();
+    if ( this->treeModel->rowCount() > 0 ) {
+        auto ret = QMessageBox::question(this, "CONFIRM", "Remove All Logs?");
+        if ( QMessageBox::Yes == ret ) {
+            this->treeView->clear();
+            qDeleteAll(this->logList);
+            this->logList.clear();
+        }
     }
 }
 

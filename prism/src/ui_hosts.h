@@ -80,6 +80,7 @@ private:
     void updateHosts(HostsLine *hosts);
 
     void onExplrClicked();
+    void onClearClicked();
 
 private slots:
     void onTimeOutHostsIo();

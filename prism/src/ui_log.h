@@ -74,7 +74,8 @@ private:
 
     QList<const LogLine *> logList;
 
-    void clear();
+private slots:
+    void onClearClicked();
 };
 
 

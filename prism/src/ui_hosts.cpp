@@ -24,8 +24,10 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QHeaderView>
+#include <QMessageBox>
 #include <QTimer>
 #include <QUrl>
+#include <QMenu>
 #include <QFileInfo>
 #include <QDesktopServices>
 #include "io_impl.h"
@@ -60,17 +62,19 @@ HostsView::HostsView(QWidget *parent, Qt::WindowFlags f) : QDialog(parent, f) {
     timer->start(5000);
     QObject::connect(timer, &QTimer::timeout, this, &HostsView::onTimeOutHostsIo);
 
+    auto ctxMenu = new QMenu(this);
+    QObject::connect(this->treeView, &SearchableTreeView::customContextMenuRequested, this, [=]() { ctxMenu->exec(QCursor::pos()); });
+    auto actn = ctxMenu->addAction("EXPLR HOSTS FILE");
+    QObject::connect(actn, &QAction::triggered, this, &HostsView::onExplrClicked);
+    actn = ctxMenu->addAction("CLEAR HOSTS");
+    QObject::connect(actn, &QAction::triggered, this, &HostsView::onClearClicked);
+
     auto btnClose = new QPushButton("CLOSE", this);
     QObject::connect(btnClose, &QPushButton::clicked, this, &HostsView::hide);
     btnClose->setFocusPolicy(Qt::NoFocus);
 
-    auto btnExplr = new QPushButton("EXPLR", this);
-    QObject::connect(btnExplr, &QPushButton::clicked, this, &HostsView::onExplrClicked);
-    btnExplr->setFocusPolicy(Qt::NoFocus);
-
     auto hlayout = new QHBoxLayout();
     hlayout->addStretch();
-    hlayout->addWidget(btnExplr);
     hlayout->addWidget(btnClose);
     hlayout->setMargin(0);
     hlayout->setSpacing(0);
@@ -219,6 +223,31 @@ void HostsView::onExplrClicked() {
     if ( this->hostsPath.isEmpty() ) return ;
     auto dir = "file://" + QFileInfo(this->hostsPath).absolutePath();
     QDesktopServices::openUrl(QUrl(dir));
+}
+
+void HostsView::onClearClicked() {
+
+    if ( this->hostsPath.isEmpty() ) return ;
+
+    if ( this->treeModel->rowCount() > 0 ) {
+        auto ret = QMessageBox::question(this, "CONFIRM", "Remove All Name Resolution?");
+        if ( QMessageBox::Yes == ret ) {
+
+            QString lines;
+            auto io = IoImpl::instance();
+
+            bool bok = QMetaObject::invokeMethod(
+                io,
+                "writeHostsOut",
+                Qt::QueuedConnection,
+                Q_ARG(QString, this->hostsPath),
+                Q_ARG(QString, lines)
+            );
+            Q_ASSERT(bok);
+
+            this->clear();
+        }
+    }
 }
 
 QVariant HostsTreeViewModel::data(const QModelIndex &index, int role) const {
