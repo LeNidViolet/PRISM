@@ -236,18 +236,6 @@ void MainWidget::onConfigConfirm(ConfigVars &config) {
 
     this->pktBytes.clear();
     this->mstatistics.bytesCaching = 0;
-    if ( !QFile(this->mconfig.pktFile).exists() ) {
-        pcap_hdr caphdr = {};
-        caphdr.magic_number = 0xa1b2c3d4;
-        caphdr.version_major = 0x02;
-        caphdr.version_minor = 0x04;
-        caphdr.thiszone = 0;
-        caphdr.sigfigs = 0;
-        caphdr.snaplen = 0xA0000000;
-        caphdr.network = 0x01;
-        this->pktBytes.append((const char*)&caphdr, sizeof(caphdr));
-    }
-
 
     if ( nullptr != this->httpServer ) {
 

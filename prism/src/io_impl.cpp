@@ -21,7 +21,9 @@
  * IN THE SOFTWARE.
  */
 #include "io_impl.h"
+#include "func.h"
 #include <QFile>
+#include <QFileInfo>
 #include <QTextStream>
 
 
@@ -55,8 +57,23 @@ __attribute__((unused)) void IoImpl::writeHostsOut(const QString &filePath, cons
 __attribute__((unused)) void IoImpl::writePktsOut(const QString &filePath, const QByteArray &fileContent) {
 
     this->instance();
+
+    auto bs = fileContent;
+
+    if ( !QFile(filePath).exists() ) {
+        pcap_hdr caphdr = {};
+        caphdr.magic_number = 0xa1b2c3d4;
+        caphdr.version_major = 0x02;
+        caphdr.version_minor = 0x04;
+        caphdr.thiszone = 0;
+        caphdr.sigfigs = 0;
+        caphdr.snaplen = 0xA0000000;
+        caphdr.network = 0x01;
+        bs.insert(0, (const char*)&caphdr, sizeof(caphdr));
+    }
+
     QFile file(filePath);
     if ( file.open(QIODevice::Append) ) {
-        file.write(fileContent);
+        file.write(bs);
     }
 }
