@@ -168,6 +168,11 @@ MainWidget::MainWidget(QWidget *parent) : QWidget(parent) {
     QObject::connect(btnHosts, &QPushButton::clicked, this, [=]() { this->hostsView->show(); });
     QObject::connect(this->btnCapture, &QPushButton::clicked, this, &MainWidget::onStartClicked);
 
+    auto ctxMenu = new QMenu(this);
+    QObject::connect(this->treeView, &SearchableTreeView::customContextMenuRequested, this, [=]() { ctxMenu->exec(QCursor::pos()); });
+    auto actn = ctxMenu->addAction("CLEAR LINKS");
+    QObject::connect(actn, &QAction::triggered, this, &MainWidget::onClearClicked);
+
     auto hlayout1 = new QHBoxLayout();
     hlayout1->addWidget(this->caaddr);
     hlayout1->addStretch();
@@ -398,6 +403,9 @@ void MainWidget::onSsDgramConnectionMade(
     unsigned short port_remote,
     int dgram_index) {
 
+    // DNS 相关数据隐藏
+    if ( 53 == port_remote ) return;
+
     auto key = genLinkKey(false, dgram_index);
     Q_ASSERT(!this->mlinks.contains(key));
 
@@ -427,44 +435,46 @@ void MainWidget::onSsDgramConnectionMade(
 void MainWidget::onSsDgramTeardown(int dgram_index) {
 
     auto key = genLinkKey(false, dgram_index);
-    Q_ASSERT(this->mlinks.contains(key));
 
-    auto link = this->mlinks[key];
-    link->teardown = true;
-    link->endTime = QTime::currentTime();
+    if ( this->mlinks.contains(key) ) {
 
-    // 更新当前行
-    this->updateLink(link);
+        auto link = this->mlinks[key];
+        link->teardown = true;
+        link->endTime = QTime::currentTime();
 
-    // 更新统计信息
-    this->mstatistics.linkActiveUdp--;
-    this->statisticsView->updateStatistics();
+        // 更新当前行
+        this->updateLink(link);
+
+        // 更新统计信息
+        this->mstatistics.linkActiveUdp--;
+        this->statisticsView->updateStatistics();
+    }
 }
 
 void MainWidget::onSsPlainDgram(const QByteArray& data, bool send_out, int dgram_index) {
 
     auto key = genLinkKey(false, dgram_index);
-    Q_ASSERT(this->mlinks.contains(key));
+    if ( this->mlinks.contains(key) ) {
+        auto link = this->mlinks[key];
 
-    auto link = this->mlinks[key];
+        if ( send_out ) {
+            this->mstatistics.bytesOutTotalUdp += data.size();
+            link->bytesOut += data.size();
+        } else {
+            this->mstatistics.bytesInTotalUdp += data.size();
+            link->bytesIn += data.size();
+        }
 
-    if ( send_out ) {
-        this->mstatistics.bytesOutTotalUdp += data.size();
-        link->bytesOut += data.size();
-    } else {
-        this->mstatistics.bytesInTotalUdp += data.size();
-        link->bytesIn += data.size();
+        auto bytes = writeout_udp_data_pkt(&link->iotrack, data.data(), data.size(), send_out);
+        this->pktBytes.append(bytes);
+        this->savePkt(false);
+
+        // 更新当前行
+        this->updateLink(link);
+
+        // 更新统计信息
+        this->statisticsView->updateStatistics();
     }
-
-    auto bytes = writeout_udp_data_pkt(&link->iotrack, data.data(), data.size(), send_out);
-    this->pktBytes.append(bytes);
-    this->savePkt(false);
-
-    // 更新当前行
-    this->updateLink(link);
-
-    // 更新统计信息
-    this->statisticsView->updateStatistics();
 }
 
 void MainWidget::createNewLink(LinkLine *link) {
@@ -489,6 +499,7 @@ void MainWidget::createNewLink(LinkLine *link) {
 
 void MainWidget::updateLink(LinkLine *link) {
 
+    if ( nullptr == link->item ) return ;
     auto index = this->treeModel->indexFromItem(link->item);
     if ( !index.isValid() ) return ;
 
@@ -553,6 +564,41 @@ void MainWidget::onFlushCache() {
 
     this->savePkt(true);
     this->statisticsView->updateStatistics();
+}
+
+void MainWidget::onClearClicked() {
+
+    if ( this->treeModel->rowCount() > 0 ) {
+        auto ret = QMessageBox::question(this, "CONFIRM", "Remove All Links?");
+        if ( QMessageBox::Yes == ret ) {
+
+//            for ( int row = 0; row < this->treeModel->rowCount(); row++ ) {
+//                for ( int column = 0; column < this->treeModel->columnCount(); column++ ) {
+//                    auto item = this->treeModel->takeItem(row, column);
+//                    delete item;
+//                }
+//            }
+
+            for ( int row = 0; row < this->treeModel->rowCount(); row++ ) {
+
+                auto item = this->treeModel->item(row);
+                Q_ASSERT(nullptr != item);
+                auto var = item->data();
+                Q_ASSERT(var.isValid());
+                auto link = var.value<LinkLine *>();
+                Q_ASSERT(nullptr != link);
+                link->item = nullptr;
+            }
+
+            for ( int row = 0; row < this->treeModel->rowCount(); row++ ) {
+                auto items = this->treeModel->takeRow(row);
+                for ( auto *item : items ) {
+                    delete item;
+                }
+            }
+            this->treeView->clear();
+        }
+    }
 }
 
 

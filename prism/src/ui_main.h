@@ -185,6 +185,7 @@ private:
     void savePkt(bool now);
 
     void onStartClicked();
+    void onClearClicked();
 
     void captureStart();
     static void captureStop();
