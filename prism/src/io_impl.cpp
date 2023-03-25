@@ -25,6 +25,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QTextStream>
+#include <QMutex>
 
 
 IoImpl *IoImpl::minstance = nullptr;

@@ -75,13 +75,13 @@ LogView::LogView(QWidget *parent, Qt::WindowFlags f) : QDialog(parent, f) {
     hlayout->addWidget(lbl);
     hlayout->addWidget(this->levelBox);
     hlayout->addWidget(btnClose);
-    hlayout->setMargin(0);
+    hlayout->setContentsMargins(0,0,0,0);
     hlayout->setSpacing(0);
 
     auto layout = new QVBoxLayout();
     layout->addWidget(this->treeView);
     layout->addLayout(hlayout);
-    layout->setMargin(0);
+    layout->setContentsMargins(0,0,0,0);
     layout->setSpacing(0);
 
     this->setLayout(layout);

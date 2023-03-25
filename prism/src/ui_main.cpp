@@ -65,7 +65,7 @@ static NAMEINDEX OprtName[] = {
 
 
 
-PrismView::PrismView(QWidget *parent, Qt::WindowFlags f) : QMainWindow(parent, f) {
+PrismView::PrismView(QWidget *parent) : QMainWindow(parent) {
 
     // 主菜单
     auto menuBar = this->menuBar();
@@ -186,7 +186,7 @@ MainWidget::MainWidget(QWidget *parent) : QWidget(parent) {
     auto layout = new QVBoxLayout();
     layout->addLayout(hlayout1);
     layout->addLayout(hlayout2);
-    layout->setMargin(0);
+    layout->setContentsMargins(0,0,0,0);
     layout->setSpacing(0);
     this->setLayout(layout);
 }
@@ -224,7 +224,7 @@ void MainWidget::updateStatus() {
 
 void MainWidget::onConfigConfirm(ConfigVars &config) {
 
-    static int httpport = 7000;
+    static int httpport = 7700;
 
     Q_ASSERT(false == this->mcapturing);
 

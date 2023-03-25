@@ -118,13 +118,13 @@ StatisticsView::StatisticsView(MainWidget *parent, Qt::WindowFlags f) : QDialog(
     auto hlayout = new QHBoxLayout();
     hlayout->addStretch();
     hlayout->addWidget(btnClose);
-    hlayout->setMargin(0);
+    hlayout->setContentsMargins(0,0,0,0);
     hlayout->setSpacing(0);
 
     auto layout = new QVBoxLayout();
     layout->addWidget(this->treeView);
     layout->addLayout(hlayout);
-    layout->setMargin(0);
+    layout->setContentsMargins(0,0,0,0);
     layout->setSpacing(0);
 
     this->setLayout(layout);

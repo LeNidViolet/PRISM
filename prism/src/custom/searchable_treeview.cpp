@@ -27,7 +27,7 @@
 #include <QLineEdit>
 #include <QHBoxLayout>
 #include <QShortcut>
-
+#include <QRegularExpression>
 #include "define.h"
 
 SearchableTreeView::SearchableTreeView(QWidget *parent, bool dbclickCopy)
@@ -96,7 +96,7 @@ SearchableTreeView::SearchableTreeView(QWidget *parent, bool dbclickCopy)
     label->setBuddy(this->lineEdit);
 
 
-    auto shortCut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_F), this);
+    auto shortCut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
     QObject::connect(
         shortCut,
         &QShortcut::activated,
@@ -105,9 +105,7 @@ SearchableTreeView::SearchableTreeView(QWidget *parent, bool dbclickCopy)
     );
 
 
-    this->mode->addItem("CONTAINS", QRegExp::FixedString);
-    this->mode->addItem("WILDCARD", QRegExp::Wildcard);
-    this->mode->addItem("REGEXP", QRegExp::RegExp);
+    this->mode->addItem("CONTAINS");
     this->mode->setCurrentIndex(0);
 
     this->echo->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
@@ -124,18 +122,14 @@ SearchableTreeView::SearchableTreeView(QWidget *parent, bool dbclickCopy)
     layout->addLayout(hLayout);
 
     layout->setSpacing(0);
-    layout->setMargin(0);
+    layout->setContentsMargins(0,0,0,0);
     this->setLayout(layout);
 }
 
 void SearchableTreeView::searching(const QString &text)
 {
     QString pattern = text.simplified();
-    QRegExp::PatternSyntax syntax =
-        QRegExp::PatternSyntax(this->mode->itemData(this->mode->currentIndex()).toInt());
-
-    QRegExp regExp(pattern, Qt::CaseInsensitive, syntax);
-    this->proxyModel->setFilterRegExp(regExp);
+    this->proxyModel->setFilterFixedString(pattern);
 
     if ( !pattern.isEmpty() ) {
         auto count = this->currentRowCount();
@@ -214,7 +208,7 @@ void SearchableTreeView::echoText(const QString &text, bool copyecho)
 
 void SearchableTreeView::clear()
 {
-    this->proxyModel->setFilterRegExp("");
+    this->proxyModel->setFilterFixedString("");
     //    this->lineEdit->clear();
     this->proxyModel->removeRows(0, this->proxyModel->rowCount());
     this->echo->clear();

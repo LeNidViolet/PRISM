@@ -94,7 +94,7 @@ SearchableTreeWidget::SearchableTreeWidget(const QStringList &headerLabels, QWid
     this->treeWgt->setItemDelegate(delegate);
 
 
-    auto shortCut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_F), this);
+    auto shortCut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
     QObject::connect(
         shortCut,
         &QShortcut::activated,
@@ -103,9 +103,7 @@ SearchableTreeWidget::SearchableTreeWidget(const QStringList &headerLabels, QWid
     );
 
 
-    this->mode->addItem("CONTAINS", Qt::MatchContains + Qt::MatchRecursive);
-    this->mode->addItem("WILDCARD", Qt::MatchWildcard + Qt::MatchRecursive);
-    this->mode->addItem("REGEXP", Qt::MatchRegExp + Qt::MatchRecursive);
+    this->mode->addItem("CONTAINS", Qt::MatchContains);
     this->mode->setCurrentIndex(0);
 
     this->echo->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
@@ -122,7 +120,7 @@ SearchableTreeWidget::SearchableTreeWidget(const QStringList &headerLabels, QWid
     layout->addLayout(hLayout);
 
     layout->setSpacing(0);
-    layout->setMargin(0);
+    layout->setContentsMargins(0,0,0,0);
     this->setLayout(layout);
 }
 

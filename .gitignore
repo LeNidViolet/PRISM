@@ -19,3 +19,5 @@ mbedtls-flat/
 shadowsocks-crypto/
 TlsEye/
 TESTPG/
+.idea/
+.DS_Store

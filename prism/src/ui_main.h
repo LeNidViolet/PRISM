@@ -206,7 +206,7 @@ class PrismView : public QMainWindow {
     Q_OBJECT
 
 public:
-    explicit PrismView(QWidget *parent = nullptr, Qt::WindowFlags f = nullptr);
+    explicit PrismView(QWidget *parent = nullptr);
 
 private slots:
     void onSsMsgOutput(int level, const QString& msg);

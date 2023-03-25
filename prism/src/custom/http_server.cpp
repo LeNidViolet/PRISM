@@ -38,7 +38,8 @@ HttpServer::HttpServer(
     this->reqPath = reqPath;
     this->respFileName = respFileName;
 
-    if ( this->reqPath[0] != "/" ) this->reqPath = "/" + this->reqPath;
+    if ( this->reqPath[0] != QChar('/') )
+        this->reqPath = "/" + this->reqPath;
 
     this->listen(address, port);
 }

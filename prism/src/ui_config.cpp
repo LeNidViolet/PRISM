@@ -232,7 +232,7 @@ ConfigView::ConfigView(ConfigVars &config, QWidget *parent, Qt::WindowFlags f) :
     layoutgb1->addLayout(hlayout3);
     layoutgb1->addLayout(hlayout4);
     layoutgb1->addLayout(hlayout10);
-    layoutgb1->setMargin(0);
+    layoutgb1->setContentsMargins(0,0,0,0);
     layoutgb1->setSpacing(0);
     gb1->setLayout(layoutgb1);
 
@@ -242,7 +242,7 @@ ConfigView::ConfigView(ConfigVars &config, QWidget *parent, Qt::WindowFlags f) :
     layoutgb2->addLayout(hlayout6);
     layoutgb2->addLayout(hlayout7);
     layoutgb2->addLayout(hlayout8);
-    layoutgb2->setMargin(0);
+    layoutgb2->setContentsMargins(0,0,0,0);
     layoutgb2->setSpacing(0);
     gb2->setLayout(layoutgb2);
 
@@ -251,7 +251,7 @@ ConfigView::ConfigView(ConfigVars &config, QWidget *parent, Qt::WindowFlags f) :
     layout->addWidget(gb2);
     layout->addStretch();
     layout->addLayout(hlayout9);
-    layout->setMargin(0);
+    layout->setContentsMargins(0,0,0,0);
     layout->setSpacing(0);
     this->setLayout(layout);
 

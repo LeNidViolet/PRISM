@@ -41,7 +41,7 @@ StatusView::StatusView(QWidget *parent) : QWidget(parent) {
 
     auto layout = new QHBoxLayout();
     layout->addWidget(this->echo);
-    layout->setMargin(0);
+    layout->setContentsMargins(0,0,0,0);;
     layout->setSpacing(0);
 
     this->setLayout(layout);
