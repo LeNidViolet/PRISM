@@ -3,9 +3,9 @@ PROJECT(PRISM)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 
-SET(MBEDTLS_DIR     ${CMAKE_CURRENT_SOURCE_DIR}/mbedtls-flat)
-SET(LIBUV_DIR       ${CMAKE_CURRENT_SOURCE_DIR}/libuv)
-SET(SS_DIR          ${CMAKE_CURRENT_SOURCE_DIR}/shadowsocks-crypto)
+SET(MBEDTLS_DIR     ${CMAKE_CURRENT_SOURCE_DIR}/ext/mbedtls-flat)
+SET(LIBUV_DIR       ${CMAKE_CURRENT_SOURCE_DIR}/ext/libuv)
+SET(SS_DIR          ${CMAKE_CURRENT_SOURCE_DIR}/ext/shadowsocks-crypto)
 SET(PRISMUI_DIR     ${CMAKE_CURRENT_SOURCE_DIR}/prism)
 
 # 设置头文件包含目录

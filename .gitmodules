@@ -1,0 +1,9 @@
+[submodule "ext/shadowsocks-crypto"]
+	path = ext/shadowsocks-crypto
+	url = https://github.com/raprepo/shadowsocks-crypto.git
+[submodule "ext/mbedtls-flat"]
+	path = ext/mbedtls-flat
+	url = https://github.com/raprepo/mbedtls-flat.git
+[submodule "ext/libuv"]
+	path = ext/libuv
+	url = https://github.com/libuv/libuv.git
