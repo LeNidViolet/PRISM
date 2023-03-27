@@ -175,7 +175,7 @@ bool TreeItem::removeChild(int position, int count) {
     for ( int row = 0; row < count; ++row ) {
         auto theItem = this->mChildItems.takeAt(position);
         if ( !theItem->mChildItems.isEmpty() )
-            theItem->removeChild(0, theItem->mChildItems.size());
+            theItem->removeChild(0, (int)theItem->mChildItems.size());
 
         delete(theItem);
     }

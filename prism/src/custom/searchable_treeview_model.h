@@ -43,33 +43,33 @@ public:
     bool insertChild(int position, int count);
 
     // 获取第row个子节点指针
-    TreeItem *child(int row) const { return this->mChildItems.value(row); }
+    [[nodiscard]] TreeItem *child(int row) const { return this->mChildItems.value(row); }
     // 获取父节点指针
-    TreeItem *parentItem() const { return this->mParentItem; }
+    [[nodiscard]] TreeItem *parentItem() const { return this->mParentItem; }
     // 子节点计数
-    int childCount() const { return this->mChildItems.count(); }
+    [[nodiscard]] int childCount() const { return this->mChildItems.count(); }
     // 获取该节点是父节点的第几个子节点
-    int row() const { return nullptr != this->mParentItem ? this->mParentItem->indexOf(this) : 0; }
+    [[nodiscard]] int row() const { return nullptr != this->mParentItem ? this->mParentItem->indexOf(this) : 0; }
 
     // 核心函数：获取节点第column列的数据
     virtual QVariant data(int column) const = 0;
     // 创建实例
     virtual TreeItem *createItem(TreeItem *parentItem) = 0;
 
-    int level() const { return this->mLevel; }
+    [[nodiscard]] int level() const { return this->mLevel; }
     void setLevel(int level) { this->mLevel = level; }
 
     //设置、获取节点存的数据指针
     void setPtr(void *p) { this->mPtr = p; }
-    void *ptr() const { return this->mPtr; }
+    [[nodiscard]] void *ptr() const { return this->mPtr; }
 
     void setPtr2(void *p) { this->mPtr2 = p; }
-    void *ptr2() const { return this->mPtr2; }
+    [[nodiscard]] void *ptr2() const { return this->mPtr2; }
 
     void setColumnSpan(bool bl) { this->mColumnSpan = bl; };
-    bool columnSpan() const { return this->mColumnSpan; }
+    [[nodiscard]] bool columnSpan() const { return this->mColumnSpan; }
 
-    int indexOf(const TreeItem * childItem) const { return this->mChildItems.indexOf((TreeItem * const)childItem); }
+    int indexOf(const TreeItem * childItem) const { return (int)this->mChildItems.indexOf((TreeItem * const)childItem); }
 
 private:
     QList<TreeItem *> mChildItems;
@@ -111,7 +111,7 @@ public:
 public:
     [[nodiscard]] TreeItem *itemFromIndex(const QModelIndex &index) const;
 
-    TreeItem *root() const { return this->mRootItem; }
+    [[nodiscard]] TreeItem *root() const { return this->mRootItem; }
 
 private:
     QStringList mHeaders;   //表头内容

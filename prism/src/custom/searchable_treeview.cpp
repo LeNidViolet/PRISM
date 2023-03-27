@@ -27,7 +27,6 @@
 #include <QLineEdit>
 #include <QHBoxLayout>
 #include <QShortcut>
-#include <QRegularExpression>
 #include "define.h"
 
 SearchableTreeView::SearchableTreeView(QWidget *parent, bool dbclickCopy)
