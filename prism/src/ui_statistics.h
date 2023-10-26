@@ -38,7 +38,7 @@ public:
     explicit StaticsTreeViewModel(MainWidget *mainWidget, QObject *parent = nullptr)
         : mmainWidget(mainWidget), QStandardItemModel(parent) {}
 
-    QVariant data(const QModelIndex &index, int role) const override;
+    [[nodiscard]] QVariant data(const QModelIndex &index, int role) const override;
 
 private:
     MainWidget *mmainWidget = nullptr;

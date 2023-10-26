@@ -20,22 +20,11 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#ifndef PRISM_FUNC_H
-#define PRISM_FUNC_H
+#ifndef PRISM_MISC_H
+#define PRISM_MISC_H
 
 #include <QByteArray>
 #include "ui_config.h"
-
-void setDarkTheme();
-void setLightTheme();
-void selectFount();
-
-QByteArray configToJson(const ConfigVars &config);
-ConfigVars *configFromJson(const QByteArray &bytes);
-QString formatBytes(qint64 bytes);
-QString genLinkKey(bool isStream, int index);
-
-
 
 
 #define MAC_ADDRESS_LEN			6
@@ -176,9 +165,25 @@ typedef struct pkt_track_ {
     unsigned int		bytes_out;  // FOR TCP
 }pkt_track;
 
-QByteArray writeout_tcp_handshake_pkts(pkt_track *track);
-QByteArray writeout_tcp_fin_pkts(pkt_track *track, bool sendOut);
-QByteArray writeout_tcp_data_pkt(pkt_track *track, const char *data, size_t data_len, bool sendOut);
-QByteArray writeout_udp_data_pkt(pkt_track *track, const char *data, size_t data_len, bool sendOut);
 
-#endif //PRISM_FUNC_H
+
+
+class MiscFuncs {
+
+public:
+
+    static QByteArray configToJson(const ConfigVars &config);
+    static ConfigVars *configFromJson(const QByteArray &bytes);
+    static QString formatBytes(qint64 bytes);
+    static QString genLinkKey(bool isStream, int index);
+
+    static QByteArray buildTcpHandshakePkt(pkt_track *track);
+    static QByteArray buildTcpFinPkt(pkt_track *track, bool sendOut);
+    static QByteArray buildTcpPayloadPkt(pkt_track *track, const char *data, size_t data_len, bool sendOut);
+    static QByteArray buildUdpPayloadPkt(pkt_track *track, const char *data, size_t data_len, bool sendOut);
+
+    static void writePktsOut(const QString &filePath, const QByteArray &fileContent);
+    static void writeHostsOut(const QString &filePath, const QString &fileContent);
+};
+
+#endif //PRISM_MISC_H

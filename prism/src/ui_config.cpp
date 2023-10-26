@@ -79,11 +79,13 @@ ConfigView::ConfigView(ConfigVars &config, QWidget *parent, Qt::WindowFlags f) :
     if ( config.method.isEmpty() ) {
         auto s = "AES-256-CFB";
         config.method = s;
+    } else {
+        this->methodCombo->addItem(config.method);
     }
-    this->methodCombo->addItem(config.method);
+    this->methodCombo->addItem("AES-256-CFB");
 
     if ( config.password.isEmpty() ) {
-        auto s = "123qwe";
+        auto s = "123456";
         config.password = s;
     }
     this->passwordLine->setText(config.password);
@@ -91,7 +93,7 @@ ConfigView::ConfigView(ConfigVars &config, QWidget *parent, Qt::WindowFlags f) :
     this->portSpin->setMinimum(0);
     this->portSpin->setMaximum(65535);
     if ( 0 == config.port )
-        config.port = 14450;
+        config.port = 7110;
     this->portSpin->setValue(config.port);
 
     this->timeoutSpin->setMinimum(0);
@@ -103,7 +105,6 @@ ConfigView::ConfigView(ConfigVars &config, QWidget *parent, Qt::WindowFlags f) :
     this->dnssrvChkbox->setChecked(config.dnssrv);
 
     auto addrlist = QStringList();
-    addrlist.append("0.0.0.0");
 
     auto hostlist = QNetworkInterface::allAddresses();
     foreach (auto &host, hostlist ) {
@@ -114,10 +115,11 @@ ConfigView::ConfigView(ConfigVars &config, QWidget *parent, Qt::WindowFlags f) :
     if ( !config.server.isNull() ) {
         addrlist.append(config.server.toString());
     }
+    addrlist.append("0.0.0.0");
     // 去重
-    for ( int i = 0; i < addrlist.count(); ++i ) {
+    for ( auto i = 0; i < addrlist.count(); ++i ) {
         forever { // remove all occurrences at greater indexes
-            int p = addrlist.lastIndexOf(addrlist[i]);
+            auto p = addrlist.lastIndexOf(addrlist[i]);
             if ( p==i ) break;
             addrlist.removeAt(p);
         }
@@ -225,15 +227,13 @@ ConfigView::ConfigView(ConfigVars &config, QWidget *parent, Qt::WindowFlags f) :
     hlayout9->addWidget(btnClose);
     hlayout9->addWidget(btnConfirm);
 
-    auto gb1 = new QGroupBox("SS", this);
+    auto gb1 = new QGroupBox("Shadowsocks", this);
     auto layoutgb1 = new QVBoxLayout();
     layoutgb1->addLayout(hlayout1);
     layoutgb1->addLayout(hlayout2);
     layoutgb1->addLayout(hlayout3);
     layoutgb1->addLayout(hlayout4);
     layoutgb1->addLayout(hlayout10);
-    layoutgb1->setContentsMargins(0,0,0,0);
-    layoutgb1->setSpacing(0);
     gb1->setLayout(layoutgb1);
 
     auto gb2 = new QGroupBox("TLS", this);
@@ -242,8 +242,6 @@ ConfigView::ConfigView(ConfigVars &config, QWidget *parent, Qt::WindowFlags f) :
     layoutgb2->addLayout(hlayout6);
     layoutgb2->addLayout(hlayout7);
     layoutgb2->addLayout(hlayout8);
-    layoutgb2->setContentsMargins(0,0,0,0);
-    layoutgb2->setSpacing(0);
     gb2->setLayout(layoutgb2);
 
     auto layout = new QVBoxLayout();
@@ -251,8 +249,6 @@ ConfigView::ConfigView(ConfigVars &config, QWidget *parent, Qt::WindowFlags f) :
     layout->addWidget(gb2);
     layout->addStretch();
     layout->addLayout(hlayout9);
-    layout->setContentsMargins(0,0,0,0);
-    layout->setSpacing(0);
     this->setLayout(layout);
 
     this->resize(600, 300);

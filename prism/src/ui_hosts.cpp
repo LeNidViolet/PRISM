@@ -30,8 +30,8 @@
 #include <QMenu>
 #include <QFileInfo>
 #include <QDesktopServices>
-#include "io_impl.h"
 #include "macros.h"
+#include "misc.h"
 
 typedef enum {
     CREATECONNECTEDNAME(Hosts, Address),
@@ -205,17 +205,7 @@ void HostsView::onTimeOutHostsIo() {
     }
 
     this->dirty = false;
-
-    auto io = IoImpl::instance();
-
-    bool bok = QMetaObject::invokeMethod(
-        io,
-        "writeHostsOut",
-        Qt::QueuedConnection,
-        Q_ARG(QString, this->hostsPath),
-        Q_ARG(QString, lines)
-    );
-    Q_ASSERT(bok);
+    MiscFuncs::writeHostsOut(this->hostsPath, lines);
 }
 
 void HostsView::onExplrClicked() {
@@ -234,16 +224,7 @@ void HostsView::onClearClicked() {
         if ( QMessageBox::Yes == ret ) {
 
             QString lines;
-            auto io = IoImpl::instance();
-
-            bool bok = QMetaObject::invokeMethod(
-                io,
-                "writeHostsOut",
-                Qt::QueuedConnection,
-                Q_ARG(QString, this->hostsPath),
-                Q_ARG(QString, lines)
-            );
-            Q_ASSERT(bok);
+            MiscFuncs::writeHostsOut(this->hostsPath, lines);
 
             this->clear();
         }

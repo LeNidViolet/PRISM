@@ -27,9 +27,11 @@
 #include <QDesktopServices>
 #include <QMenu>
 #include <QVBoxLayout>
+#include <QDialog>
 
 #include "macros.h"
-#include "ui_main.h"
+#include "ui_mainwgt.h"
+
 
 typedef enum {
     TcpLinks,
@@ -191,11 +193,11 @@ QVariant StaticsTreeViewModel::data(const QModelIndex &index, int role) const {
 
         switch ( index.row() ) {
         case TcpLinks:      return QString("%1/%2").arg(QString::number(statistics.linkActiveTcp), QString::number(statistics.linkTotalTcp));
-        case TcpBytesIn:    return QString("%1").arg(formatBytes(statistics.bytesInTotalTcp));
-        case TcpBytesOut:   return QString("%1").arg(formatBytes(statistics.bytesOutTotalTcp));
+        case TcpBytesIn:    return QString("%1").arg(MiscFuncs::formatBytes(statistics.bytesInTotalTcp));
+        case TcpBytesOut:   return QString("%1").arg(MiscFuncs::formatBytes(statistics.bytesOutTotalTcp));
         case UdpLinks:      return QString("%1/%2").arg(QString::number(statistics.linkActiveUdp), QString::number(statistics.linkTotalUdp));
-        case UdpBytesIn:    return QString("%1").arg(formatBytes(statistics.bytesInTotalUdp));
-        case UdpBytesOut:   return QString("%1").arg(formatBytes(statistics.bytesOutTotalUdp));
+        case UdpBytesIn:    return QString("%1").arg(MiscFuncs::formatBytes(statistics.bytesInTotalUdp));
+        case UdpBytesOut:   return QString("%1").arg(MiscFuncs::formatBytes(statistics.bytesOutTotalUdp));
         case Address:       return QString("%1:%2").arg(config.server.toString(), QString::number(config.port));
         case Timeout:       return QString("%1").arg(config.timeout);
         case Method:        return QString("%1").arg(config.method);
@@ -205,7 +207,7 @@ QVariant StaticsTreeViewModel::data(const QModelIndex &index, int role) const {
         case KeyFile:       return QString("%1").arg(config.keyFile);
         case PktFile:       return QString("%1").arg(config.pktFile);
         case HostsFile:     return QString("%1").arg(config.hostFile);
-        case CachBytes:     return QString("%1").arg(formatBytes(statistics.bytesCaching));
+        case CachBytes:     return QString("%1").arg(MiscFuncs::formatBytes(statistics.bytesCaching));
         default: break;
         }
     }

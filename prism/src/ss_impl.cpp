@@ -23,7 +23,7 @@
 #include "ss_impl.h"
 #include <QCoreApplication>
 #include <QMutex>
-#include "func.h"
+#include "misc.h"
 extern "C" {
 #include "shadowsocks-crypto/shadowsocks-crypto.h"
 }
@@ -158,7 +158,7 @@ SsImpl *SsImpl::instance() {
 __attribute__((unused)) void SsImpl::onCommandStart(const QByteArray& bytes) {
 
     this->instance();
-    auto config = configFromJson(bytes);
+    auto config = MiscFuncs::configFromJson(bytes);
 
     sscrypto_ctx ctx = {};
     auto bsserver = config->server.toString().toLocal8Bit();

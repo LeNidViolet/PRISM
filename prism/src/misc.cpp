@@ -20,101 +20,18 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "func.h"
+#include "misc.h"
 #include <QApplication>
-#include <QFontDialog>
-#include <QPalette>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QFile>
 #include <sys/time.h>
 #include "ui_config.h"
 
 
-static QPalette::ColorGroup colorGroups[] = {
-    QPalette::Disabled,
-    QPalette::Active,
-    QPalette::Inactive,
-};
-static QPalette::ColorRole colorRoles[] = {
-    QPalette::WindowText,
-    QPalette::Button,
-    QPalette::Light,
-    QPalette::Midlight,
-    QPalette::Dark,
-    QPalette::Mid,
-    QPalette::Text,
-    QPalette::BrightText,
-    QPalette::ButtonText,
-    QPalette::Base,
-    QPalette::Window,
-    QPalette::Shadow,
-    QPalette::Highlight,
-    QPalette::HighlightedText,
-    QPalette::Link,
-    QPalette::AlternateBase,
-    QPalette::ToolTipBase,
-    QPalette::ToolTipText,
-    QPalette::PlaceholderText,
-};
-static unsigned int darkRgb[sizeof(colorGroups) / sizeof(colorGroups[0])][sizeof(colorRoles) / sizeof(colorRoles[0])] = {
-    {0xFFE2E2E2, 0xFF323232, 0xFF373737, 0xFF343434, 0xFFBFBFBF, 0xFF232323, 0xFFFFFFFF, 0xFF373737, 0xFFE2E2E2, 0xFF323232, 0xFF323232, 0xFF000000, 0xFF464646, 0xFFFFFFFF, 0xFF0000FF, 0xFF232323, 0xFFFFFFFF, 0xFF000000, 0xFF8F8F8F, },
-    {0xFFE2E2E2, 0xFF323232, 0xFF373737, 0xFF343434, 0xFFBFBFBF, 0xFF232323, 0xFFFFFFFF, 0xFF373737, 0xFFE2E2E2, 0xFF1E1E1E, 0xFF323232, 0xFF000000, 0xFF0F64D6, 0xFFFFFFFF, 0xFF419CFF, 0xFF232323, 0xFFFFFFFF, 0xFF000000, 0xFF8F8F8F, },
-    {0xFFE2E2E2, 0xFF323232, 0xFF373737, 0xFF343434, 0xFFBFBFBF, 0xFF232323, 0xFFFFFFFF, 0xFF373737, 0xFFE2E2E2, 0xFF1E1E1E, 0xFF323232, 0xFF000000, 0xFF464646, 0xFFFFFFFF, 0xFF0000FF, 0xFF232323, 0xFFFFFFFF, 0xFF000000, 0xFF8F8F8F, },
-};
-static unsigned int lightRgb[sizeof(colorGroups) / sizeof(colorGroups[0])][sizeof(colorRoles) / sizeof(colorRoles[0])] = {
-    {0xFF787878, 0xFFF0F0F0, 0xFFFFFFFF, 0xFFF7F7F7, 0xFFA0A0A0, 0xFFA0A0A0, 0xFF787878, 0xFFFFFFFF, 0xFF787878, 0xFFF0F0F0, 0xFFF0F0F0, 0xFF000000, 0xFF0078D7, 0xFFFFFFFF, 0xFF0000FF, 0xFFE9E7E3, 0xFFFFFFDC, 0xFF000000, 0xFF7F7F7F, },
-    {0xFF000000, 0xFFF0F0F0, 0xFFFFFFFF, 0xFFE3E3E3, 0xFFA0A0A0, 0xFFA0A0A0, 0xFF000000, 0xFFFFFFFF, 0xFF000000, 0xFFFFFFFF, 0xFFF0F0F0, 0xFF696969, 0xFF0078D7, 0xFFFFFFFF, 0xFF0000FF, 0xFFE9E7E3, 0xFFFFFFDC, 0xFF000000, 0xFF7F7F7F, },
-    {0xFF000000, 0xFFF0F0F0, 0xFFFFFFFF, 0xFFE3E3E3, 0xFFA0A0A0, 0xFFA0A0A0, 0xFF000000, 0xFFFFFFFF, 0xFF000000, 0xFFFFFFFF, 0xFFF0F0F0, 0xFF696969, 0xFFF0F0F0, 0xFF000000, 0xFF0000FF, 0xFFE9E7E3, 0xFFFFFFDC, 0xFF000000, 0xFF7F7F7F, },
-};
 
 
-
-void setDarkTheme() {
-    QPalette palette;
-
-    int groupIndex = 0;
-    for ( auto &row : darkRgb ) {
-        int roleIndex = 0;
-        for ( auto &rgb : row ) {
-
-            palette.setColor(colorGroups[groupIndex], colorRoles[roleIndex], QColor::fromRgb(rgb));
-            roleIndex++;
-        }
-
-        groupIndex++;
-    }
-
-    QApplication::setPalette(palette);
-}
-
-void setLightTheme() {
-    QPalette palette;
-
-    int groupIndex = 0;
-    for ( auto &row : lightRgb ) {
-        int roleIndex = 0;
-        for ( auto &rgb : row ) {
-
-            palette.setColor(colorGroups[groupIndex], colorRoles[roleIndex], QColor::fromRgb(rgb));
-            roleIndex++;
-        }
-
-        groupIndex++;
-    }
-
-    QApplication::setPalette(palette);
-}
-
-void selectFount() {
-    auto current = QApplication::font();
-    bool bok;
-    QFont font = QFontDialog::getFont(&bok, current);
-    if ( bok ) {
-        QApplication::setFont(font);
-    }
-}
-
-QByteArray configToJson(const ConfigVars &config) {
+QByteArray MiscFuncs::configToJson(const ConfigVars &config) {
 
     QJsonObject object;
     object.insert("certfile", config.crtFile);
@@ -136,7 +53,7 @@ QByteArray configToJson(const ConfigVars &config) {
     return array;
 }
 
-ConfigVars *configFromJson(const QByteArray &bytes) {
+ConfigVars *MiscFuncs::configFromJson(const QByteArray &bytes) {
 
     ConfigVars *result = nullptr;
 
@@ -252,7 +169,7 @@ exit:
     return result;
 }
 
-QString formatBytes(qint64 bytes) {
+QString MiscFuncs::formatBytes(qint64 bytes) {
 
     const auto KB = 1024;
     const auto MB = 1024 * 1024;
@@ -277,7 +194,7 @@ QString formatBytes(qint64 bytes) {
     return result;
 }
 
-QString genLinkKey(bool isStream, int index) {
+QString MiscFuncs::genLinkKey(bool isStream, int index) {
     auto prot = isStream ? "TCP" : "UDP";
     return QString("%1%2").arg(prot, QString::number(index));
 }
@@ -444,7 +361,7 @@ static void create_udp_data_pkt(pkt_track *track, udp_pkt *pkt, unsigned int pay
     create_udp_header(&pkt->udphdr, track, payload_len, send_out);
 }
 
-QByteArray writeout_tcp_handshake_pkts(pkt_track *track) {
+QByteArray MiscFuncs::buildTcpHandshakePkt(pkt_track *track) {
 
     pcaprec_hdr     hdr;
     tcp_pkt         pkt;
@@ -476,7 +393,7 @@ QByteArray writeout_tcp_handshake_pkts(pkt_track *track) {
     return result;
 }
 
-QByteArray writeout_tcp_fin_pkts(pkt_track *track, bool sendOut) {
+QByteArray MiscFuncs::buildTcpFinPkt(pkt_track *track, bool sendOut) {
 
     pcaprec_hdr     hdr;
     tcp_pkt         pkt;
@@ -517,7 +434,7 @@ QByteArray writeout_tcp_fin_pkts(pkt_track *track, bool sendOut) {
     return result;
 }
 
-QByteArray writeout_tcp_data_pkt(pkt_track *track, const char *data, size_t data_len, bool sendOut) {
+QByteArray MiscFuncs::buildTcpPayloadPkt(pkt_track *track, const char *data, size_t data_len, bool sendOut) {
 
     pcaprec_hdr     hdr;
     tcp_pkt         pkt;
@@ -549,7 +466,7 @@ QByteArray writeout_tcp_data_pkt(pkt_track *track, const char *data, size_t data
     return result;
 }
 
-QByteArray writeout_udp_data_pkt(pkt_track *track, const char *data, size_t data_len, bool sendOut) {
+QByteArray MiscFuncs::buildUdpPayloadPkt(pkt_track *track, const char *data, size_t data_len, bool sendOut) {
 
     pcaprec_hdr     hdr;
     udp_pkt         pkt;
@@ -571,4 +488,36 @@ QByteArray writeout_udp_data_pkt(pkt_track *track, const char *data, size_t data
     result.append((const char*)data, (int)data_len);
 
     return result;
+}
+
+
+void MiscFuncs::writePktsOut(const QString &filePath, const QByteArray &fileContent) {
+
+    auto bs = fileContent;
+
+    if ( !QFile(filePath).exists() ) {
+        pcap_hdr caphdr = {};
+        caphdr.magic_number = 0xa1b2c3d4;
+        caphdr.version_major = 0x02;
+        caphdr.version_minor = 0x04;
+        caphdr.thiszone = 0;
+        caphdr.sigfigs = 0;
+        caphdr.snaplen = 0xA0000000;
+        caphdr.network = 0x01;
+        bs.insert(0, (const char*)&caphdr, sizeof(caphdr));
+    }
+
+    QFile file(filePath);
+    if ( file.open(QIODevice::Append) ) {
+        file.write(bs);
+    }
+}
+
+void MiscFuncs::writeHostsOut(const QString &filePath, const QString &fileContent) {
+
+    QFile file(filePath);
+    if ( file.open(QIODevice::WriteOnly | QIODevice::Text) ) {
+        QTextStream out(&file);
+        out << fileContent;
+    }
 }
