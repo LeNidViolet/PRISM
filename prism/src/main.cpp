@@ -1,6 +1,6 @@
 /**
- *  Copyright 2022, raprepo.
- *  Created by raprepo on 2022/8/24.
+ *  Copyright 2022, LeNidViolet.
+ *  Created by LeNidViolet on 2022/8/24.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -23,19 +23,18 @@
 
 #include <QApplication>
 #include <QStyleFactory>
-#include <QFont>
 #include "ui_main.h"
 
 int main(int argc, char *argv[]) {
 
     QApplication app(argc, argv);
-    QApplication::setStyle(QStyleFactory::create("Fusion"));
+    QApplication::setStyle(QStyleFactory::create(QStringLiteral("Fusion")));
 
-    int fontSize = QApplication::font().pointSize();
-    QFont font("Consolas", fontSize);
+    const int fontSize = QApplication::font().pointSize();
+    const QFont font(QStringLiteral("Consolas"), fontSize);
     QApplication::setFont(font);
 
-    auto ui = new PrismView;
+    const auto ui = new PrismView;
     ui->show();
 
     return QApplication::exec();

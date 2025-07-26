@@ -1,6 +1,6 @@
 /**
- *  Copyright 2022, raprepo.
- *  Created by raprepo on 2022/8/24.
+ *  Copyright 2022, LeNidViolet.
+ *  Created by LeNidViolet on 2022/8/24.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -22,7 +22,6 @@
  */
 #include "misc.h"
 #include <QApplication>
-#include <QJsonDocument>
 #include <QJsonObject>
 #include <QFile>
 
@@ -63,17 +62,17 @@ int gettimeofday(struct timeval* tv, void* timezone) {
 QByteArray MiscFuncs::configToJson(const ConfigVars &config) {
 
     QJsonObject object;
-    object.insert("certfile", config.crtFile);
-    object.insert("keyfile", config.keyFile);
-    object.insert("pktfile", config.pktFile);
-    object.insert("hostfile", config.hostFile);
+    object.insert(QStringLiteral("certfile"), config.crtFile);
+    object.insert(QStringLiteral("keyfile"), config.keyFile);
+    object.insert(QStringLiteral("pktfile"), config.pktFile);
+    object.insert(QStringLiteral("hostfile"), config.hostFile);
 
-    object.insert("server", config.server.toString());
-    object.insert("port", config.port);
-    object.insert("timeout", (int)config.timeout);
-    object.insert("method", config.method);
-    object.insert("password", config.password);
-    object.insert("dnssrv", config.dnssrv);
+    object.insert(QStringLiteral("server"), config.server.toString());
+    object.insert(QStringLiteral("port"), config.port);
+    object.insert(QStringLiteral("timeout"), (int)config.timeout);
+    object.insert(QStringLiteral("method"), config.method);
+    object.insert(QStringLiteral("password"), config.password);
+    object.insert(QStringLiteral("dnssrv"), config.dnssrv);
 
     QJsonDocument document;
     document.setObject(object);
@@ -93,8 +92,8 @@ ConfigVars *MiscFuncs::configFromJson(const QByteArray &bytes) {
         QJsonObject object = document.object();
 
         QString crt;
-        if ( object.contains("certfile") ) {
-            auto value = object.value("certfile");
+        if ( object.contains(QStringLiteral("certfile")) ) {
+            auto value = object.value(QStringLiteral("certfile"));
             if ( value.isString() ) {
                 crt = value.toString();
             }
@@ -102,8 +101,8 @@ ConfigVars *MiscFuncs::configFromJson(const QByteArray &bytes) {
         if ( crt.isEmpty() ) goto exit;
 
         QString key;
-        if ( object.contains("keyfile") ) {
-            auto value = object.value("keyfile");
+        if ( object.contains(QStringLiteral("keyfile")) ) {
+            auto value = object.value(QStringLiteral("keyfile"));
             if ( value.isString() ) {
                 key = value.toString();
             }
@@ -111,8 +110,8 @@ ConfigVars *MiscFuncs::configFromJson(const QByteArray &bytes) {
         if ( key.isEmpty() ) goto exit;
 
         QString pkt;
-        if ( object.contains("pktfile") ) {
-            auto value = object.value("pktfile");
+        if ( object.contains(QStringLiteral("pktfile")) ) {
+            auto value = object.value(QStringLiteral("pktfile"));
             if ( value.isString() ) {
                 pkt = value.toString();
             }
@@ -120,8 +119,8 @@ ConfigVars *MiscFuncs::configFromJson(const QByteArray &bytes) {
         if ( pkt.isEmpty() ) goto exit;
 
         QString host;
-        if ( object.contains("hostfile") ) {
-            auto value = object.value("hostfile");
+        if ( object.contains(QStringLiteral("hostfile")) ) {
+            auto value = object.value(QStringLiteral("hostfile"));
             if ( value.isString() ) {
                 host = value.toString();
             }
@@ -129,8 +128,8 @@ ConfigVars *MiscFuncs::configFromJson(const QByteArray &bytes) {
         if ( host.isEmpty() ) goto exit;
 
         QString server;
-        if ( object.contains("server") ) {
-            auto value = object.value("server");
+        if ( object.contains(QStringLiteral("server")) ) {
+            auto value = object.value(QStringLiteral("server"));
             if ( value.isString() ) {
                 server = value.toString();
             }
@@ -138,8 +137,8 @@ ConfigVars *MiscFuncs::configFromJson(const QByteArray &bytes) {
         if ( server.isEmpty() ) goto exit;
 
         int port = -1;
-        if ( object.contains("port") ) {
-            auto value = object.value("port");
+        if ( object.contains(QStringLiteral("port")) ) {
+            auto value = object.value(QStringLiteral("port"));
             if ( value.isDouble() ) {
                 port = value.toInt(0);
             }
@@ -147,8 +146,8 @@ ConfigVars *MiscFuncs::configFromJson(const QByteArray &bytes) {
         if ( -1 == port ) goto exit;
 
         int timeout = -1;
-        if ( object.contains("timeout") ) {
-            auto value = object.value("timeout");
+        if ( object.contains(QStringLiteral("timeout")) ) {
+            auto value = object.value(QStringLiteral("timeout"));
             if ( value.isDouble() ) {
                 timeout = value.toInt(0);
             }
@@ -156,8 +155,8 @@ ConfigVars *MiscFuncs::configFromJson(const QByteArray &bytes) {
         if ( -1 == timeout ) goto exit;
 
         QString method;
-        if ( object.contains("method") ) {
-            auto value = object.value("method");
+        if ( object.contains(QStringLiteral("method")) ) {
+            auto value = object.value(QStringLiteral("method"));
             if ( value.isString() ) {
                 method = value.toString();
             }
@@ -165,8 +164,8 @@ ConfigVars *MiscFuncs::configFromJson(const QByteArray &bytes) {
         if ( method.isEmpty() ) goto exit;
 
         QString passwd;
-        if ( object.contains("password") ) {
-            auto value = object.value("password");
+        if ( object.contains(QStringLiteral("password")) ) {
+            auto value = object.value(QStringLiteral("password"));
             if ( value.isString() ) {
                 passwd = value.toString();
             }
@@ -174,8 +173,8 @@ ConfigVars *MiscFuncs::configFromJson(const QByteArray &bytes) {
         if ( passwd.isEmpty() ) goto exit;
 
         bool dnssrv = false;
-        if ( object.contains("dnssrv") ) {
-            auto value = object.value("dnssrv");
+        if ( object.contains(QStringLiteral("dnssrv")) ) {
+            auto value = object.value(QStringLiteral("dnssrv"));
             if ( value.isBool() ) {
                 dnssrv = value.toBool();
             }
@@ -200,11 +199,11 @@ exit:
 
 QString MiscFuncs::formatBytes(qint64 bytes) {
 
-    const auto KB = 1024;
-    const auto MB = 1024 * 1024;
-    const auto GB = 1024 * 1024 * 1024;
+    constexpr auto KB = 1024;
+    constexpr auto MB = 1024 * 1024;
+    constexpr auto GB = 1024 * 1024 * 1024;
 
-    auto dbbytes = (double)bytes;
+    const auto dbbytes = static_cast<double>(bytes);
 
     QString result;
 
@@ -218,14 +217,14 @@ QString MiscFuncs::formatBytes(qint64 bytes) {
         auto k = dbbytes / KB;
         result = QString::asprintf("%.2f KB", k);
     } else {
-        result = QString("%1 B").arg(dbbytes);
+        result = QStringLiteral("%1 B").arg(dbbytes);
     }
     return result;
 }
 
 QString MiscFuncs::genLinkKey(bool isStream, int index) {
     auto prot = isStream ? "TCP" : "UDP";
-    return QString("%1%2").arg(prot, QString::number(index));
+    return QStringLiteral("%1%2").arg(prot, QString::number(index));
 }
 
 
@@ -243,7 +242,7 @@ QString MiscFuncs::genLinkKey(bool isStream, int index) {
 
 
 
-static void create_ethernet_header(ethernet_header *hdr, bool send_out) {
+static void create_ethernet_header(ethernet_header *hdr, const bool send_out) {
 
     static unsigned char fake_src_mac[MAC_ADDRESS_LEN] = {0x10, 0x20, 0x30, 0x40, 0x50, 0x60};
     static unsigned char fake_dst_mac[MAC_ADDRESS_LEN] = {0xf0, 0xe0, 0xd0, 0xc0, 0xb0, 0xa0};
@@ -260,7 +259,7 @@ static void create_ethernet_header(ethernet_header *hdr, bool send_out) {
     hdr->type = htons_u(ETHERNET_FRAME_IP);
 }
 
-static void create_ip_header(ip_header *hdr, pkt_track* track, unsigned int payload_len, bool send_out) {
+static void create_ip_header(ip_header *hdr, const pkt_track* track, const unsigned int payload_len, const bool send_out) {
 
     static unsigned short fake_src_ip_id = 0x0010;
     static unsigned short fake_dst_ip_id = 0x00a0;
@@ -282,7 +281,7 @@ static void create_ip_header(ip_header *hdr, pkt_track* track, unsigned int payl
     hdr->checksum = 0;
 }
 
-static void create_tcp_header(tcp_header *hdr, pkt_track *track, unsigned char flags, bool send_out) {
+static void create_tcp_header(tcp_header *hdr, const pkt_track *track, const unsigned char flags, const bool send_out) {
 
     hdr->src_port = send_out ? htons_u(track->src_port) : htons_u(track->dst_port);
     hdr->dst_port = send_out ? htons_u(track->dst_port) : htons_u(track->src_port);
@@ -300,7 +299,7 @@ static void create_tcp_header(tcp_header *hdr, pkt_track *track, unsigned char f
     hdr->urg_pointer = 0;
 }
 
-static void create_udp_header(udp_header *hdr, pkt_track *track, unsigned int payload_len, bool send_out) {
+static void create_udp_header(udp_header *hdr, const pkt_track *track, const unsigned int payload_len, const bool send_out) {
 
     hdr->src_port = send_out ? htons_u(track->src_port) : htons_u(track->dst_port);
     hdr->dst_port = send_out ? htons_u(track->dst_port) : htons_u(track->src_port);
@@ -311,7 +310,7 @@ static void create_udp_header(udp_header *hdr, pkt_track *track, unsigned int pa
 
 static void create_syn_pkt(pkt_track *track, tcp_pkt *pkt) {
 
-    bool send_out = true;
+    const bool send_out = true;
 
     create_ethernet_header(&pkt->ehhdr, send_out);
     create_ip_header(&pkt->iphdr, track, sizeof(tcp_header), send_out);
@@ -327,7 +326,7 @@ static void create_syn_pkt(pkt_track *track, tcp_pkt *pkt) {
 
 static void create_syn_ack_pkt(pkt_track *track, tcp_pkt *pkt) {
 
-    bool send_out = false;
+    const bool send_out = false;
 
     create_ethernet_header(&pkt->ehhdr, send_out);
     create_ip_header(&pkt->iphdr, track, sizeof(tcp_header), send_out);
@@ -338,9 +337,9 @@ static void create_syn_ack_pkt(pkt_track *track, tcp_pkt *pkt) {
     track->bytes_in++;
 }
 
-static void create_syn_done_pkt(pkt_track *track, tcp_pkt *pkt) {
+static void create_syn_done_pkt(const pkt_track *track, tcp_pkt *pkt) {
 
-    bool send_out = true;
+    const bool send_out = true;
 
     create_ethernet_header(&pkt->ehhdr, send_out);
     create_ip_header(&pkt->iphdr, track, sizeof(tcp_header), send_out);
@@ -350,7 +349,7 @@ static void create_syn_done_pkt(pkt_track *track, tcp_pkt *pkt) {
     pkt->tcphdr.ack_num = htonl_u(track->bytes_in);
 }
 
-static void create_tcp_ack_pkt(pkt_track *track, tcp_pkt *pkt, bool send_out) {
+static void create_tcp_ack_pkt(const pkt_track *track, tcp_pkt *pkt, const bool send_out) {
 
     create_ethernet_header(&pkt->ehhdr, send_out);
     create_ip_header(&pkt->iphdr, track, sizeof(tcp_header), send_out);
@@ -360,7 +359,7 @@ static void create_tcp_ack_pkt(pkt_track *track, tcp_pkt *pkt, bool send_out) {
     pkt->tcphdr.ack_num = send_out ? htonl_u(track->bytes_in) : htonl_u(track->bytes_out);
 }
 
-static void create_tcp_fin_pkt(pkt_track *track, tcp_pkt *pkt, bool send_out) {
+static void create_tcp_fin_pkt(pkt_track *track, tcp_pkt *pkt, const bool send_out) {
 
     create_ethernet_header(&pkt->ehhdr, send_out);
     create_ip_header(&pkt->iphdr, track, sizeof(tcp_header), send_out);
@@ -371,7 +370,7 @@ static void create_tcp_fin_pkt(pkt_track *track, tcp_pkt *pkt, bool send_out) {
     send_out ? track->bytes_out++ : track->bytes_in++;
 }
 
-static void create_tcp_data_pkt(pkt_track *track, tcp_pkt *pkt, unsigned int payload_len, bool send_out) {
+static void create_tcp_data_pkt(pkt_track *track, tcp_pkt *pkt, const unsigned int payload_len, const bool send_out) {
 
     create_ethernet_header(&pkt->ehhdr, send_out);
     create_ip_header(&pkt->iphdr, track, payload_len + sizeof(tcp_header), send_out);
@@ -383,7 +382,7 @@ static void create_tcp_data_pkt(pkt_track *track, tcp_pkt *pkt, unsigned int pay
     else track->bytes_in += payload_len;
 }
 
-static void create_udp_data_pkt(pkt_track *track, udp_pkt *pkt, unsigned int payload_len, bool send_out) {
+static void create_udp_data_pkt(const pkt_track *track, udp_pkt *pkt, const unsigned int payload_len, const bool send_out) {
 
     create_ethernet_header(&pkt->ehhdr, send_out);
     create_ip_header(&pkt->iphdr, track, payload_len + sizeof(udp_header), send_out);
@@ -406,23 +405,23 @@ QByteArray MiscFuncs::buildTcpHandshakePkt(pkt_track *track) {
     QByteArray result;
 
     create_syn_pkt(track, &pkt);
-    result.append((const char*)&hdr, sizeof(pcaprec_hdr));
-    result.append((const char*)&pkt, sizeof(tcp_pkt));
+    result.append(reinterpret_cast<const char *>(&hdr), sizeof(pcaprec_hdr));
+    result.append(reinterpret_cast<const char *>(&pkt), sizeof(tcp_pkt));
 
     create_syn_ack_pkt(track, &pkt);
     hdr.ts_usec += 5;
-    result.append((const char*)&hdr, sizeof(pcaprec_hdr));
-    result.append((const char*)&pkt, sizeof(tcp_pkt));
+    result.append(reinterpret_cast<const char *>(&hdr), sizeof(pcaprec_hdr));
+    result.append(reinterpret_cast<const char *>(&pkt), sizeof(tcp_pkt));
 
     create_syn_done_pkt(track, &pkt);
     hdr.ts_usec += 5;
-    result.append((const char*)&hdr, sizeof(pcaprec_hdr));
-    result.append((const char*)&pkt, sizeof(tcp_pkt));
+    result.append(reinterpret_cast<const char *>(&hdr), sizeof(pcaprec_hdr));
+    result.append(reinterpret_cast<const char *>(&pkt), sizeof(tcp_pkt));
 
     return result;
 }
 
-QByteArray MiscFuncs::buildTcpFinPkt(pkt_track *track, bool sendOut) {
+QByteArray MiscFuncs::buildTcpFinPkt(pkt_track *track, const bool sendOut) {
 
     pcaprec_hdr     hdr;
     tcp_pkt         pkt;
@@ -439,31 +438,31 @@ QByteArray MiscFuncs::buildTcpFinPkt(pkt_track *track, bool sendOut) {
 
     // 发起方发送FIN
     create_tcp_fin_pkt(track, &pkt, sendOut);
-    result.append((const char*)&hdr, sizeof(pcaprec_hdr));
-    result.append((const char*)&pkt, sizeof(tcp_pkt));
+    result.append(reinterpret_cast<const char *>(&hdr), sizeof(pcaprec_hdr));
+    result.append(reinterpret_cast<const char *>(&pkt), sizeof(tcp_pkt));
 
     // 接收方收到FIN之后ACK
     create_tcp_ack_pkt(track, &pkt, !sendOut);
     hdr.ts_usec += 5;
-    result.append((const char*)&hdr, sizeof(pcaprec_hdr));
-    result.append((const char*)&pkt, sizeof(tcp_pkt));
+    result.append(reinterpret_cast<const char *>(&hdr), sizeof(pcaprec_hdr));
+    result.append(reinterpret_cast<const char *>(&pkt), sizeof(tcp_pkt));
 
     // 接收方收到FIN之后FIN
     create_tcp_fin_pkt(track, &pkt, !sendOut);
     hdr.ts_usec += 5;
-    result.append((const char*)&hdr, sizeof(pcaprec_hdr));
-    result.append((const char*)&pkt, sizeof(tcp_pkt));
+    result.append(reinterpret_cast<const char *>(&hdr), sizeof(pcaprec_hdr));
+    result.append(reinterpret_cast<const char *>(&pkt), sizeof(tcp_pkt));
 
     // 发起方发送ACK
     create_tcp_ack_pkt(track, &pkt, sendOut);
     hdr.ts_usec += 5;
-    result.append((const char*)&hdr, sizeof(pcaprec_hdr));
-    result.append((const char*)&pkt, sizeof(tcp_pkt));
+    result.append(reinterpret_cast<const char *>(&hdr), sizeof(pcaprec_hdr));
+    result.append(reinterpret_cast<const char *>(&pkt), sizeof(tcp_pkt));
 
     return result;
 }
 
-QByteArray MiscFuncs::buildTcpPayloadPkt(pkt_track *track, const char *data, size_t data_len, bool sendOut) {
+QByteArray MiscFuncs::buildTcpPayloadPkt(pkt_track *track, const char *data, const size_t data_len, const bool sendOut) {
 
     pcaprec_hdr     hdr;
     tcp_pkt         pkt;
@@ -480,22 +479,22 @@ QByteArray MiscFuncs::buildTcpPayloadPkt(pkt_track *track, const char *data, siz
 
     QByteArray result;
 
-    result.append((const char*)&hdr, sizeof(pcaprec_hdr));
-    result.append((const char*)&pkt, sizeof(tcp_pkt));
-    result.append((const char*)data, (int)data_len);
+    result.append(reinterpret_cast<const char *>(&hdr), sizeof(pcaprec_hdr));
+    result.append(reinterpret_cast<const char *>(&pkt), sizeof(tcp_pkt));
+    result.append(data, static_cast<int>(data_len));
 
     // 对方发送ACK
     create_tcp_ack_pkt(track, &pkt, !sendOut);
     hdr.incl_len    = sizeof(tcp_pkt);
     hdr.orig_len    = sizeof(tcp_pkt);
     hdr.ts_usec     += 5;
-    result.append((const char*)&hdr, sizeof(pcaprec_hdr));
-    result.append((const char*)&pkt, sizeof(tcp_pkt));
+    result.append(reinterpret_cast<const char *>(&hdr), sizeof(pcaprec_hdr));
+    result.append(reinterpret_cast<const char *>(&pkt), sizeof(tcp_pkt));
 
     return result;
 }
 
-QByteArray MiscFuncs::buildUdpPayloadPkt(pkt_track *track, const char *data, size_t data_len, bool sendOut) {
+QByteArray MiscFuncs::buildUdpPayloadPkt(const pkt_track *track, const char *data, const size_t data_len, const bool sendOut) {
 
     pcaprec_hdr     hdr;
     udp_pkt         pkt;
@@ -512,9 +511,9 @@ QByteArray MiscFuncs::buildUdpPayloadPkt(pkt_track *track, const char *data, siz
 
     QByteArray result;
 
-    result.append((const char*)&hdr, sizeof(pcaprec_hdr));
-    result.append((const char*)&pkt, sizeof(udp_pkt));
-    result.append((const char*)data, (int)data_len);
+    result.append(reinterpret_cast<const char *>(&hdr), sizeof(pcaprec_hdr));
+    result.append(reinterpret_cast<const char *>(&pkt), sizeof(udp_pkt));
+    result.append(data, static_cast<int>(data_len));
 
     return result;
 }
@@ -533,7 +532,7 @@ void MiscFuncs::writePktsOut(const QString &filePath, const QByteArray &fileCont
         caphdr.sigfigs = 0;
         caphdr.snaplen = 0xA0000000;
         caphdr.network = 0x01;
-        bs.insert(0, (const char*)&caphdr, sizeof(caphdr));
+        bs.insert(0, reinterpret_cast<const char *>(&caphdr), sizeof(caphdr));
     }
 
     QFile file(filePath);

@@ -1,6 +1,6 @@
 /**
- *  Copyright 2022, raprepo.
- *  Created by raprepo on 2022/9/1.
+ *  Copyright 2022, LeNidViolet.
+ *  Created by LeNidViolet on 2022/9/1.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -36,7 +36,7 @@ Q_OBJECT
 
 public:
     explicit StaticsTreeViewModel(MainWidget *mainWidget, QObject *parent = nullptr)
-        : mmainWidget(mainWidget), QStandardItemModel(parent) {}
+        : QStandardItemModel(parent), mmainWidget(mainWidget) {}
 
     [[nodiscard]] QVariant data(const QModelIndex &index, int role) const override;
 

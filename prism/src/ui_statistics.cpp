@@ -1,6 +1,6 @@
 /**
- *  Copyright 2022, raprepo.
- *  Created by raprepo on 2022/9/1.
+ *  Copyright 2022, LeNidViolet.
+ *  Created by LeNidViolet on 2022/9/1.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -97,32 +97,35 @@ StatisticsView::StatisticsView(MainWidget *parent, Qt::WindowFlags f) : QDialog(
     this->treeModel->setHorizontalHeaderLabels(labels);
     this->treeView->setSourceModel(this->treeModel);
 
-
+    // ReSharper disable once CppDFAMemoryLeak
     auto ctxMenu = new QMenu(this);
     QObject::connect(this->treeView, &SearchableTreeView::customContextMenuRequested, this, [=]() { ctxMenu->exec(QCursor::pos()); });
-    auto actn = ctxMenu->addAction("EXPLR CERT FILE");
+    auto actn = ctxMenu->addAction(QStringLiteral("EXPLR CERT FILE"));
     QObject::connect(actn, &QAction::triggered, this, [=]() { StatisticsView::explrFile(parent->getConfigVars().crtFile); });
-    actn = ctxMenu->addAction("EXPLR KEY FILE");
+    actn = ctxMenu->addAction(QStringLiteral("EXPLR KEY FILE"));
     QObject::connect(actn, &QAction::triggered, this, [=]() { StatisticsView::explrFile(parent->getConfigVars().keyFile); });
-    actn = ctxMenu->addAction("EXPLR HOSTS FILE");
+    actn = ctxMenu->addAction(QStringLiteral("EXPLR HOSTS FILE"));
     QObject::connect(actn, &QAction::triggered, this, [=]() { StatisticsView::explrFile(parent->getConfigVars().hostFile); });
-    actn = ctxMenu->addAction("EXPLR PACKET FILE");
+    actn = ctxMenu->addAction(QStringLiteral("EXPLR PACKET FILE"));
     QObject::connect(actn, &QAction::triggered, this, [=]() { StatisticsView::explrFile(parent->getConfigVars().pktFile); });
     ctxMenu->addSeparator();
-    actn = ctxMenu->addAction("FLUSH CACHE");
+    actn = ctxMenu->addAction(QStringLiteral("FLUSH CACHE"));
     QObject::connect(actn, &QAction::triggered, this, &StatisticsView::flushCache);
 
-    auto btnClose = new QPushButton("CLOSE", this);
+    // ReSharper disable once CppDFAMemoryLeak
+    auto btnClose = new QPushButton(QStringLiteral("CLOSE"), this);
     QObject::connect(btnClose, &QPushButton::clicked, this, &StatisticsView::hide);
 
     btnClose->setFocusPolicy(Qt::NoFocus);
 
+    // ReSharper disable once CppDFAMemoryLeak
     auto hlayout = new QHBoxLayout();
     hlayout->addStretch();
     hlayout->addWidget(btnClose);
     hlayout->setContentsMargins(0,0,0,0);
     hlayout->setSpacing(0);
 
+    // ReSharper disable once CppDFAMemoryLeak
     auto layout = new QVBoxLayout();
     layout->addWidget(this->treeView);
     layout->addLayout(hlayout);
@@ -131,11 +134,12 @@ StatisticsView::StatisticsView(MainWidget *parent, Qt::WindowFlags f) : QDialog(
 
     this->setLayout(layout);
     this->resize(600, 400);
-    this->setWindowTitle("STATISTICS");
+    this->setWindowTitle(QStringLiteral("STATISTICS"));
 
     QList<QStandardItem*> items;
     for ( int row = 0; row < G_N_ELEMENTS(Labels); row++ ) {
         for ( int column = 0; column < G_N_ELEMENTS(OprtName); ++column ) {
+            // ReSharper disable once CppDFAMemoryLeak
             auto item = new QStandardItem();
             item->setCheckable(false);
             item->setEditable(false);
@@ -192,22 +196,22 @@ QVariant StaticsTreeViewModel::data(const QModelIndex &index, int role) const {
         auto statistics = this->mmainWidget->getStatisticsVars();
 
         switch ( index.row() ) {
-        case TcpLinks:      return QString("%1/%2").arg(QString::number(statistics.linkActiveTcp), QString::number(statistics.linkTotalTcp));
-        case TcpBytesIn:    return QString("%1").arg(MiscFuncs::formatBytes(statistics.bytesInTotalTcp));
-        case TcpBytesOut:   return QString("%1").arg(MiscFuncs::formatBytes(statistics.bytesOutTotalTcp));
-        case UdpLinks:      return QString("%1/%2").arg(QString::number(statistics.linkActiveUdp), QString::number(statistics.linkTotalUdp));
-        case UdpBytesIn:    return QString("%1").arg(MiscFuncs::formatBytes(statistics.bytesInTotalUdp));
-        case UdpBytesOut:   return QString("%1").arg(MiscFuncs::formatBytes(statistics.bytesOutTotalUdp));
-        case Address:       return QString("%1:%2").arg(config.server.toString(), QString::number(config.port));
-        case Timeout:       return QString("%1").arg(config.timeout);
-        case Method:        return QString("%1").arg(config.method);
-        case Password:      return QString("%1").arg(config.password);
-        case Dnssrv:        return QString("%1").arg(config.dnssrv);
-        case CertFile:      return QString("%1").arg(config.crtFile);
-        case KeyFile:       return QString("%1").arg(config.keyFile);
-        case PktFile:       return QString("%1").arg(config.pktFile);
-        case HostsFile:     return QString("%1").arg(config.hostFile);
-        case CachBytes:     return QString("%1").arg(MiscFuncs::formatBytes(statistics.bytesCaching));
+        case TcpLinks:      return QStringLiteral("%1/%2").arg(QString::number(statistics.linkActiveTcp), QString::number(statistics.linkTotalTcp));
+        case TcpBytesIn:    return QStringLiteral("%1").arg(MiscFuncs::formatBytes(statistics.bytesInTotalTcp));
+        case TcpBytesOut:   return QStringLiteral("%1").arg(MiscFuncs::formatBytes(statistics.bytesOutTotalTcp));
+        case UdpLinks:      return QStringLiteral("%1/%2").arg(QString::number(statistics.linkActiveUdp), QString::number(statistics.linkTotalUdp));
+        case UdpBytesIn:    return QStringLiteral("%1").arg(MiscFuncs::formatBytes(statistics.bytesInTotalUdp));
+        case UdpBytesOut:   return QStringLiteral("%1").arg(MiscFuncs::formatBytes(statistics.bytesOutTotalUdp));
+        case Address:       return QStringLiteral("%1:%2").arg(config.server.toString(), QString::number(config.port));
+        case Timeout:       return QStringLiteral("%1").arg(config.timeout);
+        case Method:        return QStringLiteral("%1").arg(config.method);
+        case Password:      return QStringLiteral("%1").arg(config.password);
+        case Dnssrv:        return QStringLiteral("%1").arg(config.dnssrv);
+        case CertFile:      return QStringLiteral("%1").arg(config.crtFile);
+        case KeyFile:       return QStringLiteral("%1").arg(config.keyFile);
+        case PktFile:       return QStringLiteral("%1").arg(config.pktFile);
+        case HostsFile:     return QStringLiteral("%1").arg(config.hostFile);
+        case CachBytes:     return QStringLiteral("%1").arg(MiscFuncs::formatBytes(statistics.bytesCaching));
         default: break;
         }
     }

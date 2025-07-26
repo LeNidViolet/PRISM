@@ -1,6 +1,6 @@
 /**
- *  Copyright 2022, raprepo.
- *  Created by raprepo on 2022/9/1.
+ *  Copyright 2022, LeNidViolet.
+ *  Created by LeNidViolet on 2022/9/1.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -56,29 +56,34 @@ HostsView::HostsView(QWidget *parent, Qt::WindowFlags f) : QDialog(parent, f) {
 
     this->treeView->setSortingEnabled(true);
 
+    // ReSharper disable once CppDFAMemoryLeak
     auto timer = new QTimer(this);
     timer->setSingleShot(false);
     timer->setInterval(5000);
     timer->start(5000);
     QObject::connect(timer, &QTimer::timeout, this, &HostsView::onTimeOutHostsIo);
 
+    // ReSharper disable once CppDFAMemoryLeak
     auto ctxMenu = new QMenu(this);
     QObject::connect(this->treeView, &SearchableTreeView::customContextMenuRequested, this, [=]() { ctxMenu->exec(QCursor::pos()); });
-    auto actn = ctxMenu->addAction("EXPLR HOSTS FILE");
+    auto actn = ctxMenu->addAction(QStringLiteral("EXPLR HOSTS FILE"));
     QObject::connect(actn, &QAction::triggered, this, &HostsView::onExplrClicked);
-    actn = ctxMenu->addAction("CLEAR HOSTS");
+    actn = ctxMenu->addAction(QStringLiteral("CLEAR HOSTS"));
     QObject::connect(actn, &QAction::triggered, this, &HostsView::onClearClicked);
 
-    auto btnClose = new QPushButton("CLOSE", this);
+    // ReSharper disable once CppDFAMemoryLeak
+    auto btnClose = new QPushButton(QStringLiteral("CLOSE"), this);
     QObject::connect(btnClose, &QPushButton::clicked, this, &HostsView::hide);
     btnClose->setFocusPolicy(Qt::NoFocus);
 
+    // ReSharper disable once CppDFAMemoryLeak
     auto hlayout = new QHBoxLayout();
     hlayout->addStretch();
     hlayout->addWidget(btnClose);
     hlayout->setContentsMargins(0,0,0,0);
     hlayout->setSpacing(0);
 
+    // ReSharper disable once CppDFAMemoryLeak
     auto layout = new QVBoxLayout();
     layout->addWidget(this->treeView);
     layout->addLayout(hlayout);
@@ -87,7 +92,7 @@ HostsView::HostsView(QWidget *parent, Qt::WindowFlags f) : QDialog(parent, f) {
 
     this->setLayout(layout);
     this->resize(600, 400);
-    this->setWindowTitle("HOSTS");
+    this->setWindowTitle(QStringLiteral("HOSTS"));
 }
 
 void HostsView::addHosts(QHostAddress& address, QStringList& domains) {
@@ -154,7 +159,7 @@ void HostsView::showEvent(QShowEvent *event) {
     }
 }
 
-void HostsView::createNewHosts(HostsLine *hosts) {
+void HostsView::createNewHosts(HostsLine *hosts) const {
 
     QVariant var;
     var.setValue(hosts);
@@ -175,7 +180,7 @@ void HostsView::createNewHosts(HostsLine *hosts) {
     this->treeView->postload();
 }
 
-void HostsView::updateHosts(HostsLine *hosts) {
+void HostsView::updateHosts(const HostsLine *hosts) const {
 
     auto index = this->treeModel->indexFromItem(hosts->item);
     if ( !index.isValid() ) return ;
@@ -208,7 +213,7 @@ void HostsView::onTimeOutHostsIo() {
     MiscFuncs::writeHostsOut(this->hostsPath, lines);
 }
 
-void HostsView::onExplrClicked() {
+void HostsView::onExplrClicked() const {
 
     if ( this->hostsPath.isEmpty() ) return ;
     auto dir = "file://" + QFileInfo(this->hostsPath).absolutePath();

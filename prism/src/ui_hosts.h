@@ -1,6 +1,6 @@
 /**
- *  Copyright 2022, raprepo.
- *  Created by raprepo on 2022/9/1.
+ *  Copyright 2022, LeNidViolet.
+ *  Created by LeNidViolet on 2022/9/1.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -35,7 +35,7 @@ class HostsLine {
 
 public:
     explicit HostsLine(QHostAddress& address, QStringList& domains)
-        : domains(domains), address(address) { }
+        : address(address), domains(domains) { }
 
     QHostAddress address;
     QStringList domains;
@@ -76,10 +76,10 @@ private:
     bool dirty = false;
     QString hostsPath;
 
-    void createNewHosts(HostsLine *hosts);
-    void updateHosts(HostsLine *hosts);
+    void createNewHosts(HostsLine *hosts) const;
+    void updateHosts(const HostsLine *hosts) const;
 
-    void onExplrClicked();
+    void onExplrClicked() const;
     void onClearClicked();
 
 private slots:

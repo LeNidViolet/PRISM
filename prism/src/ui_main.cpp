@@ -1,6 +1,6 @@
 /**
- *  Copyright 2022, raprepo.
- *  Created by raprepo on 2022/8/24.
+ *  Copyright 2022, LeNidViolet.
+ *  Created by LeNidViolet on 2022/8/24.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -24,8 +24,6 @@
 
 #include <QApplication>
 #include <QMenuBar>
-#include <QVBoxLayout>
-#include <QMetaObject>
 #include <QFontDialog>
 #include <QStatusBar>
 
@@ -61,12 +59,12 @@ static QPalette::ColorRole colorRoles[] = {
     QPalette::ToolTipText,
     QPalette::PlaceholderText,
 };
-static unsigned int darkRgb[sizeof(colorGroups) / sizeof(colorGroups[0])][sizeof(colorRoles) / sizeof(colorRoles[0])] = {
-    {0xFFE2E2E2, 0xFF323232, 0xFF373737, 0xFF343434, 0xFFBFBFBF, 0xFF232323, 0xFFFFFFFF, 0xFF373737, 0xFFE2E2E2, 0xFF323232, 0xFF323232, 0xFF000000, 0xFF464646, 0xFFFFFFFF, 0xFF0000FF, 0xFF232323, 0xFFFFFFFF, 0xFF000000, 0xFF8F8F8F, },
+static unsigned int darkRgb[std::size(colorGroups)][std::size(colorRoles)] = {
+    {0xFF646464, 0xFF323232, 0xFF373737, 0xFF343434, 0xFFBFBFBF, 0xFF232323, 0xFFFFFFFF, 0xFF373737, 0xFFE2E2E2, 0xFF323232, 0xFF323232, 0xFF000000, 0xFF464646, 0xFFFFFFFF, 0xFF0000FF, 0xFF232323, 0xFFFFFFFF, 0xFF000000, 0xFF8F8F8F, },
     {0xFFE2E2E2, 0xFF323232, 0xFF373737, 0xFF343434, 0xFFBFBFBF, 0xFF232323, 0xFFFFFFFF, 0xFF373737, 0xFFE2E2E2, 0xFF1E1E1E, 0xFF323232, 0xFF000000, 0xFF0F64D6, 0xFFFFFFFF, 0xFF419CFF, 0xFF232323, 0xFFFFFFFF, 0xFF000000, 0xFF8F8F8F, },
     {0xFFE2E2E2, 0xFF323232, 0xFF373737, 0xFF343434, 0xFFBFBFBF, 0xFF232323, 0xFFFFFFFF, 0xFF373737, 0xFFE2E2E2, 0xFF1E1E1E, 0xFF323232, 0xFF000000, 0xFF464646, 0xFFFFFFFF, 0xFF0000FF, 0xFF232323, 0xFFFFFFFF, 0xFF000000, 0xFF8F8F8F, },
 };
-static unsigned int lightRgb[sizeof(colorGroups) / sizeof(colorGroups[0])][sizeof(colorRoles) / sizeof(colorRoles[0])] = {
+static unsigned int lightRgb[std::size(colorGroups)][std::size(colorRoles)] = {
     {0xFF787878, 0xFFF0F0F0, 0xFFFFFFFF, 0xFFF7F7F7, 0xFFA0A0A0, 0xFFA0A0A0, 0xFF787878, 0xFFFFFFFF, 0xFF787878, 0xFFF0F0F0, 0xFFF0F0F0, 0xFF000000, 0xFF0078D7, 0xFFFFFFFF, 0xFF0000FF, 0xFFE9E7E3, 0xFFFFFFDC, 0xFF000000, 0xFF7F7F7F, },
     {0xFF000000, 0xFFF0F0F0, 0xFFFFFFFF, 0xFFE3E3E3, 0xFFA0A0A0, 0xFFA0A0A0, 0xFF000000, 0xFFFFFFFF, 0xFF000000, 0xFFFFFFFF, 0xFFF0F0F0, 0xFF696969, 0xFF0078D7, 0xFFFFFFFF, 0xFF0000FF, 0xFFE9E7E3, 0xFFFFFFDC, 0xFF000000, 0xFF7F7F7F, },
     {0xFF000000, 0xFFF0F0F0, 0xFFFFFFFF, 0xFFE3E3E3, 0xFFA0A0A0, 0xFFA0A0A0, 0xFF000000, 0xFFFFFFFF, 0xFF000000, 0xFFFFFFFF, 0xFFF0F0F0, 0xFF696969, 0xFFF0F0F0, 0xFF000000, 0xFF0000FF, 0xFFE9E7E3, 0xFFFFFFDC, 0xFF000000, 0xFF7F7F7F, },
@@ -79,11 +77,11 @@ PrismView::PrismView(QWidget *parent) : QMainWindow(parent) {
 
     // 主菜单
     auto menuBar = this->menuBar();
-    auto menu = menuBar->addMenu("Misc");
-    auto actionFount = menu->addAction("Font...");
-    menu = menu->addMenu("Theme");
-    auto actionDark = menu->addAction("Dark");
-    auto actionLight = menu->addAction("Light");
+    auto menu = menuBar->addMenu(QStringLiteral("Misc"));
+    auto actionFount = menu->addAction(QStringLiteral("Font..."));
+    menu = menu->addMenu(QStringLiteral("Theme"));
+    auto actionDark = menu->addAction(QStringLiteral("Dark"));
+    auto actionLight = menu->addAction(QStringLiteral("Light"));
 
     QObject::connect(actionDark, &QAction::triggered, this, [=](){ PrismView::setDarkTheme(); });
     QObject::connect(actionLight, &QAction::triggered, this, [=](){ PrismView::setLightTheme(); });
@@ -105,6 +103,7 @@ PrismView::PrismView(QWidget *parent) : QMainWindow(parent) {
     auto title = QString("PRISM (%1 %2)").arg(__DATE__, __TIME__);
     this->setWindowTitle(title);
     this->resize(800, 600);
+    this->setDarkTheme();
 }
 
 void PrismView::onSsMsgOutput(int level, const QString &msg) {

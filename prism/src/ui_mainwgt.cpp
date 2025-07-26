@@ -76,13 +76,16 @@ MainWidget::MainWidget(QWidget *parent) : QWidget(parent) {
     QObject::connect(ss, &SsImpl::ssPlainDgram, this, &MainWidget::onSsPlainDgram);
 
     // 运行SS线程
+    // ReSharper disable once CppDFAMemoryLeak
     auto thread = new QThread(this);
     QObject::connect(thread, &QThread::finished, thread, &QObject::deleteLater);
     ss->moveToThread(thread);
     thread->start();
 
-    auto btnStatis = new QPushButton("STATIS", this);
-    auto btnHosts = new QPushButton("HOSTS", this);
+    // ReSharper disable once CppDFAMemoryLeak
+    auto btnStatis = new QPushButton(QStringLiteral("STATIS"), this);
+    // ReSharper disable once CppDFAMemoryLeak
+    auto btnHosts = new QPushButton(QStringLiteral("HOSTS"), this);
     this->btnCapture = new QPushButton(this);
     this->mcapturing = false;
     this->updateStatus();
@@ -92,11 +95,13 @@ MainWidget::MainWidget(QWidget *parent) : QWidget(parent) {
     QObject::connect(this->btnCapture, &QPushButton::clicked, this, &MainWidget::onStartClicked);
 
     // 主界面右键菜单
+    // ReSharper disable once CppDFAMemoryLeak
     auto ctxMenu = new QMenu(this);
     QObject::connect(this->treeView, &SearchableTreeView::customContextMenuRequested, this, [=]() { ctxMenu->exec(QCursor::pos()); });
-    auto actn = ctxMenu->addAction("CLEAR LINKS");
+    auto actn = ctxMenu->addAction(QStringLiteral("CLEAR LINKS"));
     QObject::connect(actn, &QAction::triggered, this, &MainWidget::onClearClicked);
 
+    // ReSharper disable once CppDFAMemoryLeak
     auto hlayout1 = new QHBoxLayout();
     hlayout1->addWidget(this->caaddr);
     hlayout1->addStretch();
@@ -104,9 +109,11 @@ MainWidget::MainWidget(QWidget *parent) : QWidget(parent) {
     hlayout1->addWidget(btnStatis);
     hlayout1->addWidget(this->btnCapture);
 
+    // ReSharper disable once CppDFAMemoryLeak
     auto hlayout2 = new QHBoxLayout();
     hlayout2->addWidget(this->treeView);
 
+    // ReSharper disable once CppDFAMemoryLeak
     auto layout = new QVBoxLayout();
     layout->addLayout(hlayout1);
     layout->addLayout(hlayout2);
@@ -118,7 +125,7 @@ MainWidget::MainWidget(QWidget *parent) : QWidget(parent) {
 void MainWidget::onStartClicked() {
 
     if ( this->mcapturing ) {
-        auto ret = QMessageBox::question(this, "CONFIRM", "Stop Capture Packet?");
+        auto ret = QMessageBox::question(this, QStringLiteral("CONFIRM"), QStringLiteral("Stop Capture Packet?"));
         if ( QMessageBox::Yes == ret ) {
             MainWidget::captureStop();
 
@@ -139,10 +146,10 @@ void MainWidget::updateStatus() {
 
     if ( this->mcapturing ) {
         this->btnCapture->setIcon(QIcon(":/res/stop.png"));
-        this->btnCapture->setText("STOP");
+        this->btnCapture->setText(QStringLiteral("STOP"));
     } else {
         this->btnCapture->setIcon(QIcon(":/res/start.png"));
-        this->btnCapture->setText("START");
+        this->btnCapture->setText(QStringLiteral("START"));
     }
 }
 
@@ -171,11 +178,11 @@ void MainWidget::onConfigConfirm(ConfigVars &config) {
             this->mconfig.server,
             httpport,
             this->mconfig.crtFile,
-            "ca",
-            "ca.crt"
+            QStringLiteral("ca"),
+            QStringLiteral("ca.crt")
     );
 
-    auto addr = QString("http://%1:%2/ca").arg(this->mconfig.server.toString(), QString::number(httpport++));
+    auto addr = QStringLiteral(R"(http://%1:%2/ca)").arg(this->mconfig.server.toString(), QString::number(httpport++));
     this->caaddr->setText(addr);
 
     this->captureStart();

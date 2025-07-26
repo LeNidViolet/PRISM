@@ -1,6 +1,6 @@
 /**
- *  Copyright 2022, raprepo.
- *  Created by raprepo on 2022/8/24.
+ *  Copyright 2022, LeNidViolet.
+ *  Created by LeNidViolet on 2022/8/24.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -180,7 +180,7 @@ public:
     static QByteArray buildTcpHandshakePkt(pkt_track *track);
     static QByteArray buildTcpFinPkt(pkt_track *track, bool sendOut);
     static QByteArray buildTcpPayloadPkt(pkt_track *track, const char *data, size_t data_len, bool sendOut);
-    static QByteArray buildUdpPayloadPkt(pkt_track *track, const char *data, size_t data_len, bool sendOut);
+    static QByteArray buildUdpPayloadPkt(const pkt_track *track, const char *data, size_t data_len, bool sendOut);
 
     static void writePktsOut(const QString &filePath, const QByteArray &fileContent);
     static void writeHostsOut(const QString &filePath, const QString &fileContent);

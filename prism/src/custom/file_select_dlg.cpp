@@ -1,6 +1,6 @@
 /**
- *  Copyright 2020, raprepo.
- *  Created by raprepo on 2020/8/5.
+ *  Copyright 2020, LeNidViolet.
+ *  Created by LeNidViolet on 2020/8/5.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to

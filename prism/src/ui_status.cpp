@@ -1,6 +1,6 @@
 /**
- *  Copyright 2022, raprepo.
- *  Created by raprepo on 2022/8/25.
+ *  Copyright 2022, LeNidViolet.
+ *  Created by LeNidViolet on 2022/8/25.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -39,6 +39,7 @@ StatusView::StatusView(QWidget *parent) : QWidget(parent) {
         [=]() { this->logView->show(); }
     );
 
+    // ReSharper disable once CppDFAMemoryLeak
     auto layout = new QHBoxLayout();
     layout->addWidget(this->echo);
     layout->setContentsMargins(0,0,0,0);

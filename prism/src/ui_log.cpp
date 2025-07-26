@@ -1,6 +1,6 @@
 /**
- *  Copyright 2022, raprepo.
- *  Created by raprepo on 2022/8/25.
+ *  Copyright 2022, LeNidViolet.
+ *  Created by LeNidViolet on 2022/8/25.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -58,18 +58,22 @@ LogView::LogView(QWidget *parent, Qt::WindowFlags f) : QDialog(parent, f) {
         this->levelBox->addItem(QString::number(i), i);
     }
     this->levelBox->setCurrentIndex(3);
-    auto lbl = new QLabel("LEVEL:", this);
+    // ReSharper disable once CppDFAMemoryLeak
+    auto lbl = new QLabel(QStringLiteral("LEVEL:"), this);
 
+    // ReSharper disable once CppDFAMemoryLeak
     auto ctxMenu = new QMenu(this);
     QObject::connect(this->treeView, &SearchableTreeView::customContextMenuRequested, this, [=]() { ctxMenu->exec(QCursor::pos()); });
-    auto actn = ctxMenu->addAction("CLEAR LOGS");
+    // ReSharper disable once CppDFAMemoryLeak
+    auto actn = ctxMenu->addAction(QStringLiteral("CLEAR LOGS"));
     QObject::connect(actn, &QAction::triggered, this, &LogView::onClearClicked);
 
-
-    auto btnClose = new QPushButton("CLOSE", this);
+    // ReSharper disable once CppDFAMemoryLeak
+    auto btnClose = new QPushButton(QStringLiteral("CLOSE"), this);
     QObject::connect(btnClose, &QPushButton::clicked, this, &LogView::hide);
     btnClose->setFocusPolicy(Qt::NoFocus);
 
+    // ReSharper disable once CppDFAMemoryLeak
     auto hlayout = new QHBoxLayout();
     hlayout->addStretch();
     hlayout->addWidget(lbl);
@@ -78,6 +82,7 @@ LogView::LogView(QWidget *parent, Qt::WindowFlags f) : QDialog(parent, f) {
     hlayout->setContentsMargins(0,0,0,0);
     hlayout->setSpacing(0);
 
+    // ReSharper disable once CppDFAMemoryLeak
     auto layout = new QVBoxLayout();
     layout->addWidget(this->treeView);
     layout->addLayout(hlayout);
@@ -86,13 +91,13 @@ LogView::LogView(QWidget *parent, Qt::WindowFlags f) : QDialog(parent, f) {
 
     this->setLayout(layout);
     this->resize(600, 400);
-    this->setWindowTitle("LOG");
+    this->setWindowTitle(QStringLiteral("LOG"));
 }
 
 void LogView::onClearClicked() {
 
     if ( this->treeModel->rowCount() > 0 ) {
-        auto ret = QMessageBox::question(this, "CONFIRM", "Remove All Logs?");
+        auto ret = QMessageBox::question(this, QStringLiteral("CONFIRM"), QStringLiteral("Remove All Logs?"));
         if ( QMessageBox::Yes == ret ) {
             this->treeView->clear();
             qDeleteAll(this->logList);
@@ -113,6 +118,7 @@ void LogView::addLog(int level, QString msg) {
 
     QList<QStandardItem*> items;
     for ( int i = 0; i < G_N_ELEMENTS(OprtName); i++ ) {
+        // ReSharper disable once CppDFAMemoryLeak
         auto item = new QStandardItem();
         item->setCheckable(false);
         item->setEditable(false);
