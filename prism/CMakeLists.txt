@@ -1,40 +1,24 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.22)
-PROJECT(PRISMUI)
+# Minimum required version of CMake
+CMAKE_MINIMUM_REQUIRED(VERSION 3.25)
+PROJECT(PRISMUI LANGUAGES CXX)
 
-SET(CMAKE_CXX_STANDARD 17)
 SET(CMAKE_AUTOMOC ON)
 SET(CMAKE_AUTORCC ON)
 #SET(CMAKE_AUTOUIC ON)
 
 
-SET(PRISMUI_ADDTION_HDR
-        ${SS_DIR}/include
-        )
-INCLUDE_DIRECTORIES(${PRISMUI_ADDTION_HDR})
-
-FIND_PACKAGE(Qt6 COMPONENTS
+FIND_PACKAGE(Qt6 REQUIRED COMPONENTS
         Core
         Gui
         Widgets
         Network
-        QUIET
         )
-IF(Qt6Widgets_FOUND)
-    MESSAGE(STATUS "Found Qt6Widgets: ${Qt6Widgets_VERSION}")
-    SET(QTLIBS Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Network)
-ELSE()
-    FIND_PACKAGE(Qt5 COMPONENTS
-            Core
-            Gui
-            Widgets
-            Network
-            REQUIRED
-            )
-    IF(Qt5Widgets_FOUND)
-        MESSAGE(STATUS "Found Qt5Widgets: ${Qt5Widgets_VERSION}")
-        SET(QTLIBS Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Network)
-    ENDIF()
-ENDIF()
+
+# Check if Qt6 was found
+IF(NOT Qt6_FOUND)
+    MESSAGE(FATAL_ERROR "Qt6 not found. Please install Qt6 and set the CMAKE_PREFIX_PATH to its installation directory.")
+ENDIF(NOT Qt6_FOUND)
+
 
 SET(PRISMUI_SRC
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ui.qrc
@@ -57,9 +41,11 @@ SET(PRISMUI_SRC
 ADD_EXECUTABLE(PRISMUI ${PRISMUI_SRC})
 
 TARGET_LINK_LIBRARIES(PRISMUI
-        ${QTLIBS}
+        PRIVATE
+        Qt6::Core
+        Qt6::Gui
+        Qt6::Widgets
+        Qt6::Network
         shadowsocks-crypto
-        mbedtls
-        uv_a
         )
 
