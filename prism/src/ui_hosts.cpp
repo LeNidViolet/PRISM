@@ -144,7 +144,7 @@ void HostsView::clear() {
     this->dirty = false;
 }
 
-__attribute__((unused)) void HostsView::showEvent(QShowEvent *event) {
+void HostsView::showEvent(QShowEvent *event) {
 
     static bool firstShow = true;
     QDialog::showEvent(event);

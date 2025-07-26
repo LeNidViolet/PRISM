@@ -155,7 +155,7 @@ void StatisticsView::updateStatistics() {
     emit this->treeModel->layoutChanged();
 }
 
-__attribute__((unused)) void StatisticsView::showEvent(QShowEvent *event) {
+void StatisticsView::showEvent(QShowEvent *event) {
 
     QDialog::showEvent(event);
     this->updateStatistics();

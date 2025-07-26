@@ -155,7 +155,7 @@ SsImpl *SsImpl::instance() {
     return minstance;
 }
 
-__attribute__((unused)) void SsImpl::onCommandStart(const QByteArray& bytes) {
+void SsImpl::onCommandStart(const QByteArray& bytes) {
 
     this->instance();
     auto config = MiscFuncs::configFromJson(bytes);

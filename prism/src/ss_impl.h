@@ -37,7 +37,7 @@ public:
 
 public slots:
     // 需要运行在单独线程中
-    __attribute__((unused)) void onCommandStart(const QByteArray& bytes);
+    void onCommandStart(const QByteArray& bytes);
 
 signals:
 

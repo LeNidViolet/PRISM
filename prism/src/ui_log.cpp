@@ -124,7 +124,7 @@ void LogView::addLog(int level, QString msg) {
     this->treeView->postload();
 }
 
-__attribute__((unused)) void LogView::showEvent(QShowEvent *event) {
+void LogView::showEvent(QShowEvent *event) {
 
     static bool firstShow = true;
     QDialog::showEvent(event);

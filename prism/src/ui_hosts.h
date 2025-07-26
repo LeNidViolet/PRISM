@@ -66,7 +66,7 @@ public:
     void clear();
 
 protected:
-    __attribute__((unused)) void showEvent(QShowEvent *event) override;
+    void showEvent(QShowEvent *event) override;
 
 private:
     SearchableTreeView *treeView = nullptr;

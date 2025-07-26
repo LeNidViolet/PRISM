@@ -42,7 +42,7 @@ public:
     void incomingConnection(qintptr handle) override;
 
 public slots:
-    __attribute__((unused)) void terminal() { this->close(); this->deleteLater(); }
+    void terminal() { this->close(); this->deleteLater(); }
 
 private slots:
     void readClient();

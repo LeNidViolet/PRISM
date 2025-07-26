@@ -25,9 +25,38 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QFile>
-#include <sys/time.h>
+
 #include "ui_config.h"
 
+#ifdef _WIN32
+#include <windows.h>
+// struct timeval {
+//     long tv_sec;   // 秒
+//     long tv_usec;  // 微秒
+// };
+int gettimeofday(struct timeval* tv, void* timezone) {
+    if (tv == nullptr) return -1;
+
+    FILETIME ft;
+    GetSystemTimeAsFileTime(&ft);  // 或用 GetSystemTimePreciseAsFileTime(&ft) if available
+
+    // Convert FILETIME to 64-bit integer
+    uint64_t time = ((uint64_t)ft.dwHighDateTime << 32) | ft.dwLowDateTime;
+
+    // Windows epoch (1601) -> Unix epoch (1970) difference in 100-nanosecond units
+    const uint64_t EPOCH_DIFF = 11644473600000000ULL;
+
+    // Convert to microseconds
+    time = (time - EPOCH_DIFF) / 10;
+
+    tv->tv_sec = (long)(time / 1000000ULL);
+    tv->tv_usec = (long)(time % 1000000ULL);
+
+    return 0;
+}
+#else
+#include <sys/time.h>
+#endif
 
 
 
