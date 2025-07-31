@@ -343,7 +343,7 @@ static void createIpHeader(IP_HEADER *ipHdr, const QSharedPointer<FLOW_TRACK> &f
     const bool isIpv6 = flow->srcIp.protocol() == QAbstractSocket::IPv6Protocol;
 
     if (isIpv6) {
-        ipHdr->ipv6.ver_tc_flow     = htonl((6 << 28) | (0 << 20) | 0); // version=6, traffic class=0, flow label=0
+        ipHdr->ipv6.ver_tc_flow     = htonl_u((6 << 28) | (0 << 20) | 0); // version=6, traffic class=0, flow label=0
         ipHdr->ipv6.payload_length  = htons_u(payloadLen);              // 不包括IPv6头部，单位为字节
         ipHdr->ipv6.next_header     = flow->protocol;                    // 通常是 TCP(6) 或 UDP(17)
         ipHdr->ipv6.hop_limit       = 90;                               // 类似TTL
