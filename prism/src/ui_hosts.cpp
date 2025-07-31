@@ -213,7 +213,7 @@ void HostsView::onExplrClicked() const {
     if ( this->m_hostsPath.isEmpty() ) return ;
 
     const QString folderPath = QFileInfo(this->m_hostsPath).absolutePath();
-    QUrl url = QUrl::fromLocalFile(folderPath);
+    const QUrl url = QUrl::fromLocalFile(folderPath);
 
     QDesktopServices::openUrl(url);
 }
@@ -224,6 +224,8 @@ void HostsView::onClearClicked() {
         const auto ret = QMessageBox::question(this, QStringLiteral("CONFIRM"), QStringLiteral("Remove All Name Resolution?"));
         if ( QMessageBox::Yes == ret ) {
 
+            this->m_treeView->clear();
+            this->m_lastHostsNodes.clear();
             HostsDumper::instance().clear();
         }
     }
