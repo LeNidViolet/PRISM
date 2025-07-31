@@ -1,0 +1,9 @@
+[submodule "ext/mbedtls-flat"]
+	path = ext/mbedtls-flat
+	url = https://github.com/LeNidViolet/mbedtls-flat.git
+[submodule "ext/libuv"]
+	path = ext/libuv
+	url = https://github.com/libuv/libuv.git
+[submodule "ext/socks5-crypto"]
+	path = ext/socks5-crypto
+	url = https://github.com/LeNidViolet/socks5-crypto.git
