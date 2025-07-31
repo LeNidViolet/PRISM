@@ -306,7 +306,7 @@ static QByteArray buildUdpPayloadPkt(const QSharedPointer<FLOW_TRACK> &flow, con
     QByteArray result;
 
     result.append(reinterpret_cast<const char *>(&capHdr), sizeof(PCAPREC_HDR));
-    result.append(reinterpret_cast<const char *>(&udpPkt), isIpv6 ? sizeof(TCP_PKT_V6) : sizeof(TCP_PKT_V4));
+    result.append(reinterpret_cast<const char *>(&udpPkt), isIpv6 ? sizeof(UDP_PKT_V6) : sizeof(UDP_PKT_V4));
     result.append(data, static_cast<int>(dataLen));
 
     return result;
@@ -450,7 +450,7 @@ static void createSynAckPkt(const QSharedPointer<FLOW_TRACK> &flow, TCP_PKT *tcp
 
 static void createSynDonePkt(const QSharedPointer<FLOW_TRACK> &flow, TCP_PKT *tcpPkt) {
 
-    constexpr bool sendOut = false;
+    constexpr bool sendOut = true;
     const bool isIpv6 = flow->srcIp.protocol() == QAbstractSocket::IPv6Protocol;
 
     if (isIpv6) {
