@@ -211,8 +211,11 @@ void HostsView::onTimeout() {
 void HostsView::onExplrClicked() const {
 
     if ( this->m_hostsPath.isEmpty() ) return ;
-    const auto dir = "file://" + QFileInfo(this->m_hostsPath).absolutePath();
-    QDesktopServices::openUrl(QUrl(dir));
+
+    const QString folderPath = QFileInfo(this->m_hostsPath).absolutePath();
+    QUrl url = QUrl::fromLocalFile(folderPath);
+
+    QDesktopServices::openUrl(url);
 }
 
 void HostsView::onClearClicked() {

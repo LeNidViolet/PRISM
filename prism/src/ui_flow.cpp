@@ -69,15 +69,15 @@ FlowView::FlowView(QWidget *parent) : QWidget(parent) {
 
     // 右键菜单
     // ReSharper disable once CppDFAMemoryLeak
-    const auto ctxMenu = new QMenu(this);
-    QObject::connect(
-        this->m_treeView,
-        &SearchableTreeView::customContextMenuRequested,
-        this,
-        [ctxMenu]() { ctxMenu->exec(QCursor::pos()); }
-        );
-    const auto actn = ctxMenu->addAction(QStringLiteral("CLEAR LINKS"));
-    QObject::connect(actn, &QAction::triggered, this, &FlowView::onClearClicked);
+    //const auto ctxMenu = new QMenu(this);
+    //QObject::connect(
+    //    this->m_treeView,
+    //    &SearchableTreeView::customContextMenuRequested,
+    //    this,
+    //    [ctxMenu]() { ctxMenu->exec(QCursor::pos()); }
+    //    );
+    //const auto actn = ctxMenu->addAction(QStringLiteral("CLEAR LINKS"));
+    //QObject::connect(actn, &QAction::triggered, this, &FlowView::onClearClicked);
 
     // 定时器
     // ReSharper disable once CppDFAMemoryLeak

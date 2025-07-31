@@ -66,6 +66,10 @@ MainWidget::MainWidget(QWidget *parent) : QWidget(parent) {
     QObject::connect(btnLogs, &QPushButton::clicked, this, [this]() { this->m_logView->show(); });
     QObject::connect(this->m_btnCapture, &QPushButton::clicked, this, &MainWidget::onStartClicked);
 
+    // 
+    QObject::connect(qApp, &QCoreApplication::aboutToQuit, this, [this]() {
+        this->captureStop();
+        });
 
     // ReSharper disable once CppDFAMemoryLeak
     const auto hlayoutBtns = new QHBoxLayout();

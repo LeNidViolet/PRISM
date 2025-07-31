@@ -182,9 +182,12 @@ void StatisticsView::showEvent(QShowEvent *event) {
 
 void StatisticsView::explrFile(const QString &filePath) {
 
-    if ( filePath.isEmpty() ) return ;
-    const auto dir = "file://" + QFileInfo(filePath).absolutePath();
-    QDesktopServices::openUrl(QUrl(dir));
+    if (filePath.isEmpty()) return;
+
+    const QString folderPath = QFileInfo(filePath).absolutePath();
+    QUrl url = QUrl::fromLocalFile(folderPath);
+
+    QDesktopServices::openUrl(url);
 }
 
 // ReSharper disable once CppParameterMayBeConst

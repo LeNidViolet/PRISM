@@ -32,6 +32,7 @@
 #include <QLabel>
 #include <QProcessEnvironment>
 #include <QButtonGroup>
+#include <QStandardPaths>
 #include "config.hpp"
 #include "misc.h"
 
@@ -67,7 +68,7 @@ ConfigView::ConfigView(QWidget *parent, const Qt::WindowFlags f) : QDialog(paren
     path = QDir::toNativeSeparators(path);
     this->pktFileLine->setText(path);
 
-    path = QProcessEnvironment::systemEnvironment().value(QStringLiteral("HOME"));
+    path = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     path = QStringLiteral("%1/.config/wireshark/hosts").arg(path);
     path = QDir::toNativeSeparators(path);
     this->hostFileLine->setText(path);
@@ -337,10 +338,10 @@ void ConfigView::onSelectClicked(const int reason) {
 
     switch ( reason ) {
     case SELECT_CRT:
-        filter = QStringLiteral("Cert File (*.crt *.cer)");
+        filter = QStringLiteral("Cert File (*.crt *.cer);;All Files (*)");
         break;
     case SELECT_KEY:
-        filter = QStringLiteral("Key File (*.key)");
+        filter = QStringLiteral("Key File (*.key);;All Files (*)");
         break;
     case SELECT_HOST:
         save = true;
@@ -359,17 +360,20 @@ void ConfigView::onSelectClicked(const int reason) {
         fileName = QFileDialog::getOpenFileName(
             this,
             QStringLiteral("Open File"),
+            MiscFuncs::getExecutableRootPath(),
             filter
         );
     } else {
         fileName = QFileDialog::getSaveFileName(
             this,
             QStringLiteral("Save File"),
+            MiscFuncs::getExecutableRootPath(),
             filter
         );
     }
 
     if ( fileName.isEmpty() ) return;
+    fileName = QDir::toNativeSeparators(fileName);
 
     switch ( reason ) {
     case SELECT_CRT:
