@@ -42,7 +42,7 @@ signals:
 protected:
     void currentChanged(const QModelIndex &current, const QModelIndex &previous) override {
         this->scrollTo(current);
-        emit(currentIndexChanged(current, previous));
+        emit currentIndexChanged(current, previous);
     }
 };
 
@@ -50,7 +50,7 @@ class SearchableTreeView final : public QWidget {
     Q_OBJECT
 
 public:
-    explicit SearchableTreeView(QWidget *parent = nullptr);
+    explicit SearchableTreeView(QWidget *parent = nullptr, bool dbclickCopy = true);
 
     [[nodiscard]] QHeaderView *header() const { return this->treeView->header(); }
 
@@ -72,24 +72,23 @@ public:
     }
 
     void scrollTo(const QModelIndex &index) const { this->treeView->scrollTo(index); }
-
     void clear() const;
-
     void postload();
 
 public slots:
     void expandAll() const { this->treeView->expandAll(); }
     void collapseAll() const { this->treeView->collapseAll(); }
+    void copyCurrentItemText() const;
 
 signals:
+    void doubleClicked(const QModelIndex &index);
     void currentIndexChanged(const QModelIndex &current, const QModelIndex &previous);
 
 private:
     void searching(const QString &text);
-
     void checkRowSpan(const QModelIndex &parent = QModelIndex());
-
     int currentRowCount(const QModelIndex &parent = QModelIndex());
+    void doubleClickedHandler(const QModelIndex &index) const;
 
     MyTreeView *treeView = nullptr;
     QLineEdit *lineEdit = nullptr;

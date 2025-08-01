@@ -29,7 +29,7 @@
 #include <QShortcut>
 #include "define.h"
 
-SearchableTreeView::SearchableTreeView(QWidget *parent)
+SearchableTreeView::SearchableTreeView(QWidget *parent, bool dbclickCopy)
     : QWidget(parent) {
 
     this->treeView = new MyTreeView(this);
@@ -64,6 +64,20 @@ SearchableTreeView::SearchableTreeView(QWidget *parent)
         this,
         &SearchableTreeView::currentIndexChanged
     );
+    QObject::connect(
+    this->treeView,
+        &QTreeView::doubleClicked,
+        this,
+        &SearchableTreeView::doubleClicked
+    );
+    if ( dbclickCopy ) {
+        QObject::connect(
+            this->treeView,
+            &QTreeView::doubleClicked,
+            this,
+            &SearchableTreeView::doubleClickedHandler
+        );
+    }
     QObject::connect(
         this->lineEdit,
         &QLineEdit::textEdited,
@@ -157,6 +171,12 @@ int SearchableTreeView::currentRowCount(const QModelIndex &parent) {
     return result;
 }
 
+void SearchableTreeView::doubleClickedHandler(const QModelIndex &index) const {
+    // skip visible item Collapsed/Expanded
+    if ( this->proxyModel->rowCount(index) == 0 )
+        this->copyCurrentItemText();
+}
+
 void SearchableTreeView::echoText(const QString &text, const bool copyecho) const {
 
     const QFontMetrics fontWidth(this->echo->font());
@@ -185,4 +205,19 @@ void SearchableTreeView::postload() {
     } else {
         this->checkRowSpan();
     }
+}
+
+void SearchableTreeView::copyCurrentItemText() const {
+    QString result;
+    const auto index = this->treeView->currentIndex();
+    if ( !index.isValid() ) return ;
+
+    const auto data = this->proxyModel->data(index);
+    if ( !data.isValid() ) return ;
+
+    result = data.toString().simplified();
+    if ( result.isEmpty() ) return ;
+    QApplication::clipboard()->setText(result);
+
+    this->echoText(QStringLiteral("%1").arg(result), true);
 }

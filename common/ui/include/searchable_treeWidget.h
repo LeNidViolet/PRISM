@@ -33,7 +33,7 @@ class SearchableTreeWidget final : public QWidget {
     Q_OBJECT
 
 public:
-    explicit SearchableTreeWidget(const QStringList &headerLabels, QWidget *parent = nullptr);
+    explicit SearchableTreeWidget(const QStringList &headerLabels, QWidget *parent = nullptr, bool dbclickCopy = true);
 
     void addTopLevelItem(QTreeWidgetItem *item) const { this->treeWgt->addTopLevelItem(item); }
 
@@ -49,8 +49,7 @@ public:
     void expandItem(const QTreeWidgetItem *item) const { this->treeWgt->expandItem(item); }
 
     void echoText(const QString &text, bool copyecho = false) const;
-
-    QString copyCurrentItemText() const;
+    void copyCurrentItemText() const;
 
     void clear() const {
         this->treeWgt->clear(); /*this->lineEdit->clear();*/
@@ -64,16 +63,15 @@ public slots:
     void collapseAll() const { this->treeWgt->collapseAll(); }
 
 signals:
+    void itemDoubleClicked(QTreeWidgetItem *item, int column);
     void currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 
 private:
     void searching(const QString &text) const;
-
     void hideAllItems(bool hide) const;
-
     static void hideAllSubItems(const QTreeWidgetItem *item, bool hide);
-
     static void hideItems(QList<QTreeWidgetItem *> &items, bool hide);
+    void itemDoubleClickedHandler(const QTreeWidgetItem *item, int column) const;
 
     QTreeWidget *treeWgt;
     QLineEdit *lineEdit;

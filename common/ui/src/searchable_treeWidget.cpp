@@ -31,7 +31,7 @@
 
 #include "define.h"
 
-SearchableTreeWidget::SearchableTreeWidget(const QStringList &headerLabels, QWidget *parent)
+SearchableTreeWidget::SearchableTreeWidget(const QStringList &headerLabels, QWidget *parent, bool dbclickCopy)
     : QWidget(parent) {
 
     this->treeWgt = new QTreeWidget(this);
@@ -57,6 +57,20 @@ SearchableTreeWidget::SearchableTreeWidget(const QStringList &headerLabels, QWid
         this,
         &SearchableTreeWidget::currentItemChanged
     );
+    QObject::connect(
+        this->treeWgt,
+        &QTreeWidget::itemDoubleClicked,
+        this,
+        &SearchableTreeWidget::itemDoubleClicked
+    );
+    if ( dbclickCopy ) {
+        QObject::connect(
+            this->treeWgt,
+            &QTreeWidget::itemDoubleClicked,
+            this,
+            &SearchableTreeWidget::itemDoubleClickedHandler
+        );
+    }
     QObject::connect(
         this->lineEdit,
         &QLineEdit::textEdited,
@@ -168,20 +182,30 @@ void SearchableTreeWidget::hideItems(QList<QTreeWidgetItem *> &items, const bool
     }
 }
 
-QString SearchableTreeWidget::copyCurrentItemText() const {
+void SearchableTreeWidget::itemDoubleClickedHandler(const QTreeWidgetItem *item, int column) const {
+
+    // skip visible item Collapsed/Expanded
+    for ( int i = 0; i < item->childCount(); i++ ) {
+        const auto subitem = item->child(i);
+        if (!subitem->isHidden())
+            return;
+    }
+
+    this->copyCurrentItemText();
+}
+
+void SearchableTreeWidget::copyCurrentItemText() const {
 
     QString result;
     const auto item = this->treeWgt->currentItem();
-    if (!item) return {};
+    if (!item) return ;
 
     result = item->text(this->treeWgt->currentColumn());
     result = result.simplified();
-    if (result.isEmpty()) return {};
+    if (result.isEmpty()) return ;
 
     QApplication::clipboard()->setText(result);
-    this->echoText(QString("%1").arg(result), true);
-
-    return result;
+    this->echoText(QStringLiteral("%1").arg(result), true);
 }
 
 void SearchableTreeWidget::echoText(const QString &text, const bool copyecho) const {
