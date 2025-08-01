@@ -1,19 +1,57 @@
 
 # PRISM
-Q: 这个项目是做什么用的?
 
-A: 基于shadowsocks协议的数据转存程序, 支持同步解密TLS数据(需要使用自己的根证书)
+PRISM is a SOCKS5/Shadowsocks proxy service built on libuv, designed for traffic inspection and TLS decryption.
 
-Q: 原理是什么?
+It utilizes mbedTLS to decrypt TLS-encrypted traffic in real-time. All proxied data is saved to a specified PCAP file, which can be opened with Wireshark for detailed traffic analysis.
+Decrypted TLS data will be stored in plaintext within the PCAP file.
 
-A: 程序作为shadowsocks服务端运行, 接收并转发shadowsocks客户端发来的数据, 同时将数据存储到本地(会存储为wireshark可用的pcap文件)
+⸻
 
-Q: 如何使用它?
+### Supported Protocols
+1. [x] TCP (IPv4 & IPv6)
+2. [x] UDP (IPv4 & IPv6)
 
-A: 在配置好shadowsocks客户端, 将服务器IP设置为程序所在机器, 两边设置同样的解密算法, 端口, 密码
+⸻
 
-Q: 项目的编译环境?
+### Supported Operating Systems
+1. [x] macOS
+2. [x] Windows(x64 & arm64)
 
-A: MacOS, Clion, Qt6
+⸻
+
+### How to Build
+
+#### Prerequisites
+
+Install the following tools depending on your platform:
+
+macOS:
+* Ninja
+* CMake (version 3.25 or higher)
+* Qt (version 6 or higher)
+
+Windows:
+* Visual Studio 2022
+* CMake (3.25+)
+* Qt (version 6 or higher)
+
+#### Note: On Windows, you may need to configure the following environment variables:
+* CMAKE_PREFIX_PATH = C:\Qt\6.9.1\msvc2022_xxxxx
+* PATH += C:\Qt\6.9.1\msvc2022_xxxxx\bin
 
 
+#### Build Steps (using Terminal/PowerShell)
+Navigate to the project root directory.
+
+`cmake --list-presets`
+
+`cmake --preset <your-preset>`
+
+`cmake --build --preset <your-preset>`
+
+⸻
+
+### Usage
+
+To enable TLS decryption, you must install the self-signed certificate on both the proxy server and all client systems using the proxy.
