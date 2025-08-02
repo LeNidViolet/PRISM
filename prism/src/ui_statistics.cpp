@@ -185,7 +185,7 @@ void StatisticsView::explrFile(const QString &filePath) {
     if (filePath.isEmpty()) return;
 
     const QString folderPath = QFileInfo(filePath).absolutePath();
-    QUrl url = QUrl::fromLocalFile(folderPath);
+    const QUrl url = QUrl::fromLocalFile(folderPath);
 
     QDesktopServices::openUrl(url);
 }

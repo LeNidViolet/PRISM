@@ -24,7 +24,6 @@
 #ifndef PRISM_UI_MAINWGT_H
 #define PRISM_UI_MAINWGT_H
 
-#include <QDialog>
 #include <QWidget>
 #include <QPushButton>
 #include <utility>

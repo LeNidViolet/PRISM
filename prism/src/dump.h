@@ -25,15 +25,14 @@
 
 #include <QSharedPointer>
 #include <QString>
-#include <QElapsedTimer>
 #include "custom/safe_map.hpp"
 #include "ui_mainwgt.h"
 
 
 // 多久刷新一下到磁盘
-#define FILE_FLUSH_INTERVAL_MS      10 * 1000
+#define FILE_FLUSH_INTERVAL_MS      (10 * 1000)
 // 最大缓存字节数
-#define CACHING_BUFFER_MAX_BYTES    1 * 1024 * 1024
+#define CACHING_BUFFER_MAX_BYTES    (1 * 1024 * 1024)
 
 
 

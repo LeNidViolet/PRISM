@@ -338,7 +338,7 @@ QVariant FlowViewListModel::data(const QModelIndex &index, int role) const {
             case Flow_Src:      return QStringLiteral("%1:%2").arg(line->last.localAddr, QString::number(line->last.localPort));
             case Flow_Dst:      return QStringLiteral("%1:%2").arg(line->last.remoteAddr, QString::number(line->last.remotePort));
             case Flow_RxRate:   return QStringLiteral("%1/s").arg(MiscFuncs::formatBytes(line->rxBytesDelta));
-            case Flow_TxRate:   return QStringLiteral("%1/s").arg(MiscFuncs::formatBytes(line->rxBytesDelta));
+            case Flow_TxRate:   return QStringLiteral("%1/s").arg(MiscFuncs::formatBytes(line->txBytesDelta));
             case Flow_RxBytes:  return MiscFuncs::formatBytes(line->last.rxBytes);
             case Flow_TxBytes:  return MiscFuncs::formatBytes(line->last.txBytes);
             case Flow_Duration: return duration;

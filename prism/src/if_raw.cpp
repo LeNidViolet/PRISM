@@ -21,7 +21,7 @@
  * IN THE SOFTWARE.
  */
 
-#include <QtConcurrent>
+#include <QtConcurrent/QtConcurrentRun>
 #include <QString>
 #include <QFuture>
 extern "C" {
@@ -35,8 +35,6 @@ extern "C" {
 
 
 static bool Socks5CryptoServerStarted = false;
-
-static QFuture<void> Socks5CryptoServerThread;
 
 static FLOW_STATS FlowStats;
 
@@ -304,6 +302,11 @@ static void thread_routine(
     socks5_crypto_launch(&ctx);
 }
 
+QFuture<void>& globalSocks5Thread() {
+    static QFuture<void> thread;
+    return thread;
+}
+
 void StartShadowsocksCryptoServer(
     const unsigned short listenPort,
     const unsigned int timeout,
@@ -318,7 +321,7 @@ void StartShadowsocksCryptoServer(
 
     memset(&FlowStats, 0, sizeof(FlowStats));
 
-    Socks5CryptoServerThread = QtConcurrent::run(
+    globalSocks5Thread() = QtConcurrent::run(
         thread_routine,
         false,
         listenPort,
@@ -340,7 +343,7 @@ void StopShadowsocksCryptoServer() {
     }
 
     socks5_crypto_stop();
-    Socks5CryptoServerThread.waitForFinished();
+    globalSocks5Thread().waitForFinished();
     Socks5CryptoServerStarted = false;
 }
 
@@ -357,7 +360,7 @@ void StartSocks5CryptoServer(
 
     memset(&FlowStats, 0, sizeof(FlowStats));
 
-    Socks5CryptoServerThread = QtConcurrent::run(
+    globalSocks5Thread() = QtConcurrent::run(
         thread_routine,
         true,
         listenPort,
@@ -378,7 +381,7 @@ void StopSocks5CryptoServer() {
     }
 
     socks5_crypto_stop();
-    Socks5CryptoServerThread.waitForFinished();
+    globalSocks5Thread().waitForFinished();
     Socks5CryptoServerStarted = false;
 }
 

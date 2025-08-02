@@ -25,7 +25,7 @@
 #include <QDir>
 #include <QFile>
 
-QString MiscFuncs::formatBytes(unsigned int bytes) {
+QString MiscFuncs::formatBytes(const unsigned int bytes) {
 
     constexpr auto KB = 1024;
     constexpr auto MB = 1024 * 1024;
@@ -36,13 +36,13 @@ QString MiscFuncs::formatBytes(unsigned int bytes) {
     QString result;
 
     if ( dbbytes >= GB ) {
-        auto g = dbbytes / GB;
+        const auto g = dbbytes / GB;
         result = QString::asprintf("%.2f GB", g);
     } else if ( dbbytes >= MB ) {
-        auto m = dbbytes / MB;
+        const auto m = dbbytes / MB;
         result = QString::asprintf("%.2f MB", m);
     } else if ( dbbytes >= KB ) {
-        auto k = dbbytes / KB;
+        const auto k = dbbytes / KB;
         result = QString::asprintf("%.2f KB", k);
     } else {
         result = QStringLiteral("%1 B").arg(dbbytes);
