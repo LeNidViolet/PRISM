@@ -39,7 +39,7 @@ HttpServer::HttpServer(
     this->m_respFileName = respFileName;
 
     if ( this->m_reqPath[0] != QChar('/') )
-        this->m_reqPath = "/" + this->m_reqPath;
+        this->m_reqPath = QStringLiteral("/") + this->m_reqPath;
 
     this->listen(address, port);
 }
@@ -61,31 +61,31 @@ void HttpServer::incomingConnection(qintptr handle) {
 
 void HttpServer::discardClient() const {
 
-    const auto socket = static_cast<QTcpSocket *>(sender());
+    const auto socket = dynamic_cast<QTcpSocket *>(sender());
     socket->deleteLater();
 }
 
 void HttpServer::readClient() const {
 
     // This slot is called when the client sent data to the server
-    const auto socket = static_cast<QTcpSocket *>(sender());
+    const auto socket = dynamic_cast<QTcpSocket *>(sender());
     if ( socket->canReadLine() ) {
         const auto bytes = socket->readAll();
         const auto request = QString(bytes);
-        auto lines = request.split("\r\n");
+        auto lines = request.split(QStringLiteral("\r\n"));
         if ( lines.count() > 3 ) {
-            auto parts = lines[0].split(" ");
+            auto parts = lines[0].split(QStringLiteral(" "));
             if ( parts.count() == 3 ) {
-                if ( parts[0] == "GET" && parts[1] == this->m_reqPath ) {
+                if ( parts[0] == QStringLiteral("GET") && parts[1] == this->m_reqPath ) {
                     QFile file(this->m_filePath);
                     if ( file.open(QIODevice::ReadOnly) ) {
                         const auto filecontent = file.readAll();
 
                         QTextStream response(socket);
                         response << "HTTP/1.0 200 Ok\r\n";
-                        response << QString("Content-Disposition: attachment; filename=%1\r\n").arg(this->m_respFileName);
+                        response << QStringLiteral("Content-Disposition: attachment; filename=%1\r\n").arg(this->m_respFileName);
                         response << "Content-Type: application/octet-stream\r\n";
-                        response << QString("Content-Length: %1\r\n").arg(filecontent.size());
+                        response << QStringLiteral("Content-Length: %1\r\n").arg(filecontent.size());
                         response << "\r\n";
                         response << filecontent;
 

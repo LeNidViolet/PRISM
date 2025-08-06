@@ -23,7 +23,7 @@
 #ifndef LOGGING_H
 #define LOGGING_H
 
-#include <QString>
+
 #include "safe_queue.hpp"
 // Define the log record structure
 

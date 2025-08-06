@@ -23,7 +23,6 @@
 #include "misc.h"
 #include <QApplication>
 #include <QDir>
-#include <QFile>
 
 QString MiscFuncs::formatBytes(const unsigned int bytes) {
 

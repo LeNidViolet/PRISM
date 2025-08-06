@@ -24,12 +24,9 @@
 #define PRISM_UI_LOG_H
 
 #include <QDialog>
-#include <QList>
 #include <QTime>
 #include <QTimer>
-#include <QSharedPointer>
 #include <QStandardItemModel>
-#include <QComboBox>
 #include <utility>
 #include "searchable_treeview.h"
 #include "custom/logging.hpp"

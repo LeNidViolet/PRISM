@@ -23,8 +23,6 @@
 #ifndef PRISM_UI_CONFIG_HPP
 #define PRISM_UI_CONFIG_HPP
 
-#include <QString>
-
 class ConfigVars {
 
 public:

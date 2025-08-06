@@ -26,7 +26,6 @@
 
 #include <QHostAddress>
 #include <QSharedPointer>
-#include <QList>
 #include <utility>
 #include "custom/safe_map.hpp"
 

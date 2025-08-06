@@ -24,7 +24,6 @@
 #define PRISM_UI_FLOW_H
 
 #include <QHostAddress>
-#include <QString>
 #include <QTime>
 #include "custom/safe_map.hpp"
 
@@ -49,10 +48,10 @@ typedef struct FLOW_NODE_ {
         const auto haRemote = QHostAddress(remoteAddr);
         if (haLocal.protocol() != haRemote.protocol()) {
             if (haLocal.protocol() == QAbstractSocket::IPv6Protocol) {
-                const QString ipv6Mapped = "::ffff:" + remoteAddr;
+                const QString ipv6Mapped = QStringLiteral("::ffff:") + remoteAddr;
                 this->remoteAddr = QHostAddress(ipv6Mapped).toString();
             } else {
-                const QString ipv6Mapped = "::ffff:" + localAddr;
+                const QString ipv6Mapped = QStringLiteral("::ffff:") + localAddr;
                 this->localAddr = QHostAddress(ipv6Mapped).toString();
             }
         }

@@ -29,7 +29,6 @@
 #include <QHeaderView>
 #include <QMessageBox>
 #include <QTimer>
-#include <QUrl>
 #include <QMenu>
 #include "hosts.h"
 #include "macros.h"

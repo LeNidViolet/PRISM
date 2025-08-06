@@ -27,8 +27,6 @@
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include <QPushButton>
-#include <QFileInfo>
-#include <QDir>
 #include <QLabel>
 #include <QProcessEnvironment>
 #include <QButtonGroup>

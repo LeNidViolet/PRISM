@@ -101,8 +101,8 @@ bool HostsDumper::writeHostsOut(const bool force) {
     QString lines;
     this->m_hostsMap.forEach([&lines](const QString& key, const QSharedPointer<HOSTS_NODE>& value) {
         auto line = value->address.toString();
-        line += " " + value->domains.join(QStringLiteral(" "));
-        lines += line + "\r\n";
+        line += QStringLiteral(" ") + value->domains.join(QStringLiteral(" "));
+        lines += line + QStringLiteral("\r\n");
     });
 
     QFile file(this->m_hostsPath);

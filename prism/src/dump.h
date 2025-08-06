@@ -24,7 +24,6 @@
 #define PRISM_UI_DUMP_H
 
 #include <QSharedPointer>
-#include <QString>
 #include "custom/safe_map.hpp"
 #include "ui_mainwgt.h"
 
@@ -231,10 +230,10 @@ typedef struct FLOW_TRACK_ {
 
         if (srcIp.protocol() != dstIp.protocol()) {
             if (srcIp.protocol() == QAbstractSocket::IPv6Protocol) {
-                const QString ipv6Mapped = "::ffff:" + dstIp.toString();
+                const QString ipv6Mapped = QStringLiteral("::ffff:") + dstIp.toString();
                 this->dstIp = QHostAddress(ipv6Mapped);
             } else {
-                const QString ipv6Mapped = "::ffff:" + srcIp.toString();
+                const QString ipv6Mapped = QStringLiteral("::ffff:") + srcIp.toString();
                 this->srcIp = QHostAddress(ipv6Mapped);
             }
         }

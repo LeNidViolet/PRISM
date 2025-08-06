@@ -25,7 +25,6 @@
 #include "ui_config.h"
 #include <QApplication>
 #include <QMessageBox>
-#include <QIcon>
 #include <QFile>
 #include <QPushButton>
 #include <QVBoxLayout>

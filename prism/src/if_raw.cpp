@@ -22,8 +22,6 @@
  */
 
 #include <QtConcurrent/QtConcurrentRun>
-#include <QString>
-#include <QFuture>
 extern "C" {
 #include "socks5-crypto/socks5-crypto.h"
 }

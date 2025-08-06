@@ -26,7 +26,6 @@
 #include <QWidget>
 #include <QStandardItemModel>
 #include <utility>
-#include <QMap>
 #include "searchable_treeview.h"
 #include "flow.h"
 

@@ -24,7 +24,6 @@
 #define PRISM_UI_HOSTS_UI_H
 
 #include <QDialog>
-#include <QMap>
 #include <QStandardItemModel>
 #include "searchable_treeview.h"
 #include "hosts.h"
